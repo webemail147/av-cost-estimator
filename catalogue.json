@@ -1,0 +1,2090 @@
+{
+  "version": 1,
+  "settings": {
+    "appTitle": "AV Equipment Estimator",
+    "appSubtitle": "Meeting Room Technology – internal budget estimates",
+    "brandColor": "#0078d4",
+    "baseCurrency": "GBP",
+    "warrantyPct": 20,
+    "warrantyYears": 3,
+    "projectMgmtPct": 0,
+    "contingencyPct": 0,
+    "teamEmail": "",
+    "quoteSubject": "Request for official AV quotation",
+    "adminPassword": "admin",
+    "disclaimer": "These figures are estimates only and may vary based on vendor quotes, site conditions, cabling requirements and local labour rates. This is not a quotation or purchase order. Prices exclude VAT/sales tax. An official quote must be obtained from an approved AV vendor before any purchase."
+  },
+  "currencies": [
+    {
+      "code": "GBP",
+      "symbol": "£",
+      "rate": 1
+    },
+    {
+      "code": "USD",
+      "symbol": "$",
+      "rate": 1.27
+    },
+    {
+      "code": "EUR",
+      "symbol": "€",
+      "rate": 1.17
+    }
+  ],
+  "roomSizes": [
+    {
+      "id": "focus",
+      "name": "Focus / Phone Booth (1–2)"
+    },
+    {
+      "id": "huddle",
+      "name": "Huddle (3–5)"
+    },
+    {
+      "id": "medium",
+      "name": "Medium (6–10)"
+    },
+    {
+      "id": "large",
+      "name": "Large (11–20)"
+    },
+    {
+      "id": "boardroom",
+      "name": "Boardroom (15–25)"
+    }
+  ],
+  "platforms": [
+    "Android",
+    "Windows",
+    "BYOD",
+    "N/A"
+  ],
+  "categories": [
+    {
+      "id": "bundles",
+      "name": "Room Bundles",
+      "icon": "📦"
+    },
+    {
+      "id": "displays",
+      "name": "Displays",
+      "icon": "📺"
+    },
+    {
+      "id": "video",
+      "name": "Video Bars & Cameras",
+      "icon": "🎥"
+    },
+    {
+      "id": "audio",
+      "name": "Audio",
+      "icon": "🎙️"
+    },
+    {
+      "id": "control",
+      "name": "Touch Panels & Control",
+      "icon": "🖲️"
+    },
+    {
+      "id": "mounts",
+      "name": "Mounts & Stands",
+      "icon": "🧱"
+    },
+    {
+      "id": "cabling",
+      "name": "Cabling & Connectivity",
+      "icon": "🔌"
+    },
+    {
+      "id": "services",
+      "name": "Services",
+      "icon": "🛠️"
+    }
+  ],
+  "countries": [
+    {
+      "code": "GB",
+      "name": "United Kingdom",
+      "region": "EMEA",
+      "currency": "GBP",
+      "labourRate": 85,
+      "minLabour": 0,
+      "shippingMult": 1,
+      "hardwareUpliftPct": 0,
+      "vendorName": "",
+      "vendorEmail": ""
+    },
+    {
+      "code": "IE",
+      "name": "Ireland",
+      "region": "EMEA",
+      "currency": "EUR",
+      "labourRate": 85,
+      "minLabour": 0,
+      "shippingMult": 1,
+      "hardwareUpliftPct": 0,
+      "vendorName": "",
+      "vendorEmail": ""
+    },
+    {
+      "code": "BE",
+      "name": "Belgium",
+      "region": "EMEA",
+      "currency": "EUR",
+      "labourRate": 90,
+      "minLabour": 0,
+      "shippingMult": 1,
+      "hardwareUpliftPct": 0,
+      "vendorName": "",
+      "vendorEmail": ""
+    },
+    {
+      "code": "NL",
+      "name": "Netherlands",
+      "region": "EMEA",
+      "currency": "EUR",
+      "labourRate": 90,
+      "minLabour": 0,
+      "shippingMult": 1,
+      "hardwareUpliftPct": 0,
+      "vendorName": "",
+      "vendorEmail": ""
+    },
+    {
+      "code": "DE",
+      "name": "Germany",
+      "region": "EMEA",
+      "currency": "EUR",
+      "labourRate": 90,
+      "minLabour": 0,
+      "shippingMult": 1,
+      "hardwareUpliftPct": 0,
+      "vendorName": "",
+      "vendorEmail": ""
+    },
+    {
+      "code": "FR",
+      "name": "France",
+      "region": "EMEA",
+      "currency": "EUR",
+      "labourRate": 90,
+      "minLabour": 0,
+      "shippingMult": 1,
+      "hardwareUpliftPct": 0,
+      "vendorName": "",
+      "vendorEmail": ""
+    },
+    {
+      "code": "SK",
+      "name": "Slovakia",
+      "region": "EMEA",
+      "currency": "EUR",
+      "labourRate": 65,
+      "minLabour": 0,
+      "shippingMult": 1,
+      "hardwareUpliftPct": 0,
+      "vendorName": "",
+      "vendorEmail": ""
+    },
+    {
+      "code": "US",
+      "name": "United States",
+      "region": "North America",
+      "currency": "USD",
+      "labourRate": 125,
+      "minLabour": 0,
+      "shippingMult": 1.3,
+      "hardwareUpliftPct": 0,
+      "vendorName": "",
+      "vendorEmail": ""
+    },
+    {
+      "code": "CA",
+      "name": "Canada",
+      "region": "North America",
+      "currency": "USD",
+      "labourRate": 110,
+      "minLabour": 0,
+      "shippingMult": 1.3,
+      "hardwareUpliftPct": 0,
+      "vendorName": "",
+      "vendorEmail": ""
+    },
+    {
+      "code": "MX",
+      "name": "Mexico",
+      "region": "Latin America",
+      "currency": "USD",
+      "labourRate": 70,
+      "minLabour": 0,
+      "shippingMult": 1.5,
+      "hardwareUpliftPct": 0,
+      "vendorName": "",
+      "vendorEmail": ""
+    },
+    {
+      "code": "BR",
+      "name": "Brazil",
+      "region": "Latin America",
+      "currency": "USD",
+      "labourRate": 75,
+      "minLabour": 0,
+      "shippingMult": 1.5,
+      "hardwareUpliftPct": 0,
+      "vendorName": "",
+      "vendorEmail": ""
+    },
+    {
+      "code": "CN",
+      "name": "China",
+      "region": "APAC",
+      "currency": "USD",
+      "labourRate": 65,
+      "minLabour": 0,
+      "shippingMult": 1.6,
+      "hardwareUpliftPct": 0,
+      "vendorName": "",
+      "vendorEmail": ""
+    },
+    {
+      "code": "IN",
+      "name": "India",
+      "region": "APAC",
+      "currency": "USD",
+      "labourRate": 45,
+      "minLabour": 0,
+      "shippingMult": 1.6,
+      "hardwareUpliftPct": 0,
+      "vendorName": "",
+      "vendorEmail": ""
+    },
+    {
+      "code": "AU",
+      "name": "Australia",
+      "region": "APAC",
+      "currency": "USD",
+      "labourRate": 95,
+      "minLabour": 0,
+      "shippingMult": 1.6,
+      "hardwareUpliftPct": 0,
+      "vendorName": "",
+      "vendorEmail": ""
+    }
+  ],
+  "products": [
+    {
+      "id": "d55",
+      "sku": "LG-55UR640S",
+      "name": "55\" Commercial Display",
+      "brand": "LG",
+      "category": "displays",
+      "platform": "N/A",
+      "roomSizes": [
+        "huddle"
+      ],
+      "price": 700,
+      "shipping": 60,
+      "labourHours": 1.5,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://screenmoove.com/cdn/shop/products/1623387929262_25010_ffd68ce7-9fbb-4386-94d9-d85bb56d9b50_1055x700.webp?v=1695137613",
+      "description": "LG 55\" UR640S UHD commercial display (4K, 400 nits, webOS)."
+    },
+    {
+      "id": "d65",
+      "sku": "LG-65UR640S",
+      "name": "65\" Commercial Display",
+      "brand": "LG",
+      "category": "displays",
+      "platform": "N/A",
+      "roomSizes": [
+        "huddle",
+        "medium"
+      ],
+      "price": 1000,
+      "shipping": 80,
+      "labourHours": 2,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://cdn11.bigcommerce.com/s-mfdnq9n4ks/images/stencil/1280x1280/products/7435/33167/65UR640S3__90788.1677467060.1280.1280__70211.1736152031.1280.1280__19565.1736156985.jpg?c=2",
+      "description": "LG 65\" UR640S UHD commercial display (4K, 400 nits, webOS)."
+    },
+    {
+      "id": "d75",
+      "sku": "LG-75UR640S",
+      "name": "75\" Commercial Display",
+      "brand": "LG",
+      "category": "displays",
+      "platform": "N/A",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 1700,
+      "shipping": 110,
+      "labourHours": 2.5,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.lg.com/content/dam/channelbtb/lgcom/global/images/business/information-display/digital-signage/86ur640s0zd_aek_ekhq_global_b/gallery/large04.jpg",
+      "description": "LG 75\" UR640S UHD commercial display (4K, 330 nits, webOS)."
+    },
+    {
+      "id": "d86",
+      "sku": "LG-86UR640S",
+      "name": "86\" Commercial Display",
+      "brand": "LG",
+      "category": "displays",
+      "platform": "N/A",
+      "roomSizes": [
+        "large"
+      ],
+      "price": 3000,
+      "shipping": 160,
+      "labourHours": 3,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.lg.com/content/dam/channelbtb/lgcom/global/images/business/information-display/digital-signage/86ur640s0zd_aek_ekhq_global_b/gallery/large09.jpg",
+      "description": "LG 86\" UR640S UHD commercial display (4K, 330 nits, webOS)."
+    },
+    {
+      "id": "d98",
+      "sku": "LG-98UH5J-H",
+      "name": "98\" Commercial Display",
+      "brand": "LG",
+      "category": "displays",
+      "platform": "N/A",
+      "roomSizes": [
+        "boardroom"
+      ],
+      "price": 6000,
+      "shipping": 300,
+      "labourHours": 4,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.lg.com/content/dam/channel/wcms/in/images/business/98uh5j-h_atrz_eail_in_b/gallery/98UH5J-H-Digital-Signage-Right-View-DZ-02.jpg?w=800",
+      "description": "LG 98\" UH5J-H UHD signage (4K, 500 nits, 24/7, anti-glare)."
+    },
+    {
+      "id": "d110",
+      "sku": "LG-110UH5Q-H",
+      "name": "110\" Commercial Display",
+      "brand": "LG",
+      "category": "displays",
+      "platform": "N/A",
+      "roomSizes": [
+        "boardroom"
+      ],
+      "price": 10000,
+      "shipping": 450,
+      "labourHours": 6,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.lg.com/ae/images/business/digital-signage/md08802865/gallery/medium02.jpg",
+      "description": "LG 110\" UH5Q-H UHD signage (4K, 500 nits, 24/7, anti-glare)."
+    },
+    {
+      "id": "led136",
+      "sku": "LG-LAEC015-GN",
+      "name": "136\" LED Wall",
+      "brand": "LG",
+      "category": "displays",
+      "platform": "N/A",
+      "roomSizes": [
+        "boardroom"
+      ],
+      "price": 30000,
+      "shipping": 900,
+      "labourHours": 16,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.lg.com/content/dam/channel/wcms/es/images/business/laec015-gn_aeu_eees_es_b/gallery/large04.jpg",
+      "description": "LG 136\" All-in-One LED (LAEC series) with built-in controller and speakers. Requires site survey."
+    },
+    {
+      "id": "ya50",
+      "sku": "YL-A50",
+      "name": "MeetingBar A50 120° Camera",
+      "brand": "Yealink",
+      "category": "video",
+      "platform": "Android",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 1800,
+      "shipping": 40,
+      "labourHours": 3,
+      "warranty": true,
+      "sample": true,
+      "active": true,
+      "imageUrl": "https://www.yealink.com/website-service/attachment/product/image/20241021/20241021034339307bbfb.png",
+      "description": "All-in-one Android video bar for Teams Rooms."
+    },
+    {
+      "id": "ctp25",
+      "sku": "YL-CTP25",
+      "name": "CTP25 Touch Panel",
+      "brand": "Yealink",
+      "category": "control",
+      "platform": "Android",
+      "roomSizes": [
+        "huddle",
+        "medium",
+        "large"
+      ],
+      "price": 400,
+      "shipping": 15,
+      "labourHours": 1,
+      "warranty": true,
+      "sample": true,
+      "active": true,
+      "imageUrl": "https://www.yealink.com/website-service/attachment/product/image/20241106/202411060735136513687.png",
+      "description": "Teams Rooms touch console."
+    },
+    {
+      "id": "mxa",
+      "sku": "SH-MXA920",
+      "name": "Ceiling Microphone Array",
+      "brand": "Shure",
+      "category": "audio",
+      "platform": "N/A",
+      "roomSizes": [
+        "large",
+        "boardroom"
+      ],
+      "price": 3500,
+      "shipping": 40,
+      "labourHours": 4,
+      "warranty": true,
+      "sample": true,
+      "active": true,
+      "imageUrl": "https://products.shureweb.eu/cdn-cgi/image/width=1380,height=1380,format=auto/shure_product_db/product_images/files/8cd/c7f/ca-/original/1478ae57d758ff403e3dda4b026b2272.webp",
+      "description": "Ceiling array microphone for large spaces (requires DSP)."
+    },
+    {
+      "id": "p300",
+      "sku": "SH-P300",
+      "name": "IntelliMix P300 Audio Processor",
+      "brand": "Shure",
+      "category": "audio",
+      "platform": "N/A",
+      "roomSizes": [
+        "large",
+        "boardroom"
+      ],
+      "price": 1500,
+      "shipping": 25,
+      "labourHours": 3,
+      "warranty": true,
+      "sample": true,
+      "active": true,
+      "imageUrl": "https://cdn.cs.1worldsync.com/96/7b/967bc9b0-1279-4c4a-a93e-fc19039b5553.jpg",
+      "description": "Audio DSP for ceiling microphone systems."
+    },
+    {
+      "id": "spk",
+      "sku": "SPK-CEIL",
+      "name": "Ceiling Speakers (pair)",
+      "brand": "Generic",
+      "category": "audio",
+      "platform": "N/A",
+      "roomSizes": [
+        "large",
+        "boardroom"
+      ],
+      "price": 450,
+      "shipping": 20,
+      "labourHours": 3,
+      "warranty": true,
+      "sample": true,
+      "active": true,
+      "imageUrl": "",
+      "description": "Pair of ceiling speakers."
+    },
+    {
+      "id": "wm",
+      "sku": "MNT-WALL",
+      "name": "Display Wall Mount",
+      "brand": "Generic",
+      "category": "mounts",
+      "platform": "N/A",
+      "roomSizes": [
+        "huddle",
+        "medium",
+        "large",
+        "boardroom"
+      ],
+      "price": 150,
+      "shipping": 20,
+      "labourHours": 1,
+      "warranty": false,
+      "sample": true,
+      "active": true,
+      "imageUrl": "",
+      "description": "Fixed/tilt wall mount for displays up to 86\"."
+    },
+    {
+      "id": "ms",
+      "sku": "ON-STAND",
+      "name": "Motorised Mobile Display Stand",
+      "brand": "Onkron",
+      "category": "mounts",
+      "platform": "N/A",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 600,
+      "shipping": 60,
+      "labourHours": 1,
+      "warranty": false,
+      "sample": true,
+      "active": true,
+      "imageUrl": "https://onkron-uk.co.uk/cdn/shop/files/TS2811E-B_0_2_868b4ce3-27de-42a0-9ff0-1d5164a71397_720x.png?v=1782911435",
+      "description": "Motorized mobile stand for TVs or interactive panels 50\"–120\", max 125 kg, black TS2811E"
+    },
+    {
+      "id": "cab",
+      "sku": "CAB-KIT",
+      "name": "Room Cabling Kit",
+      "brand": "Generic",
+      "category": "cabling",
+      "platform": "N/A",
+      "roomSizes": [
+        "huddle",
+        "medium",
+        "large",
+        "boardroom"
+      ],
+      "price": 120,
+      "shipping": 10,
+      "labourHours": 1,
+      "warranty": false,
+      "sample": true,
+      "active": true,
+      "imageUrl": "",
+      "description": "HDMI / USB / network patch leads for a standard room."
+    },
+    {
+      "id": "cat6",
+      "sku": "CAB-CAT6",
+      "name": "New Cat6 Data Point",
+      "brand": "Generic",
+      "category": "cabling",
+      "platform": "N/A",
+      "roomSizes": [],
+      "price": 90,
+      "shipping": 0,
+      "labourHours": 1.5,
+      "warranty": false,
+      "sample": true,
+      "active": true,
+      "imageUrl": "",
+      "description": "Supply and terminate a new data point (per point)."
+    },
+    {
+      "id": "srv",
+      "sku": "SRV-SURVEY",
+      "name": "Site Survey",
+      "brand": "Service",
+      "category": "services",
+      "platform": "N/A",
+      "roomSizes": [],
+      "price": 0,
+      "shipping": 0,
+      "labourHours": 4,
+      "warranty": false,
+      "sample": true,
+      "active": true,
+      "imageUrl": "",
+      "description": "On-site survey before installation. Charged at the local labour rate."
+    },
+    {
+      "id": "dec",
+      "sku": "SRV-DECOM",
+      "name": "Decommission Legacy Equipment",
+      "brand": "Service",
+      "category": "services",
+      "platform": "N/A",
+      "roomSizes": [],
+      "price": 0,
+      "shipping": 0,
+      "labourHours": 3,
+      "warranty": false,
+      "sample": true,
+      "active": true,
+      "imageUrl": "",
+      "description": "Removal and disposal of existing AV equipment (per room)."
+    },
+    {
+      "id": "yl-a10",
+      "sku": "A10-020",
+      "name": "MeetingBar A10 + CTP18",
+      "brand": "Yealink",
+      "category": "bundles",
+      "platform": "Android",
+      "roomSizes": [
+        "focus",
+        "huddle"
+      ],
+      "price": 1144,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://store.midwich.com/media/image/gallery/20241112070512667ce0d.jpg",
+      "description": "Android video bar with CTP18 touch panel for small rooms and home offices."
+    },
+    {
+      "id": "yl-a25",
+      "sku": "A25-031",
+      "name": "MeetingBar A25 151° Camera + CTP25",
+      "brand": "Yealink",
+      "category": "bundles",
+      "platform": "Android",
+      "roomSizes": [
+        "focus",
+        "huddle"
+      ],
+      "price": 1468,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://store.midwich.com/media/image/gallery/Yealink-YEAA25031-2.jpg",
+      "description": "Ultra-wide 4K all-in-one video bar for focus rooms, with CTP25 touch panel."
+    },
+    {
+      "id": "yl-a30",
+      "sku": "A30-020",
+      "name": "MeetingBar A30 + CTP18",
+      "brand": "Yealink",
+      "category": "bundles",
+      "platform": "Android",
+      "roomSizes": [
+        "huddle"
+      ],
+      "price": 1541,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": false,
+      "imageUrl": "https://www.comcenav.com/cms/wp-content/uploads/2023/01/yealink-a30-image6.png",
+      "description": "All-in-one video bar with CTP18 touch panel for small rooms."
+    },
+    {
+      "id": "yl-a40",
+      "sku": "A40-031",
+      "name": "MeetingBar A40 120° Camera + CTP25",
+      "brand": "Yealink",
+      "category": "bundles",
+      "platform": "Android",
+      "roomSizes": [
+        "huddle",
+        "medium"
+      ],
+      "price": 1576,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.yealink.com/website-service/attachment/product/image/20241021/20241021034339811cb24.png",
+      "description": "AI dual-lens video bar for small to medium rooms, with CTP25 touch panel."
+    },
+    {
+      "id": "yl-a50",
+      "sku": "A50-031",
+      "name": "MeetingBar A50 120° Camera + CTP25",
+      "brand": "Yealink",
+      "category": "bundles",
+      "platform": "Android",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 2137,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://cdn.cs.1worldsync.com/33/8c/338c11c9-6f49-484c-975a-c65365b08085.jpg",
+      "description": "Triple 50MP camera video bar for medium to large rooms, with CTP25 touch panel."
+    },
+    {
+      "id": "yl-mbpro",
+      "sku": "MeetingBoard-Pro",
+      "name": "MeetingBoard Pro",
+      "brand": "Yealink",
+      "category": "bundles",
+      "platform": "Android",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 2614,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.yealink.com/website-service/attachment/product/image/20250520/202505200937123170e33.png",
+      "description": "All-in-one video conferencing board with interactive whiteboard."
+    },
+    {
+      "id": "yl-s40",
+      "sku": "MVC-S40-C5U-000",
+      "name": "MVC S40 Teams Rooms System",
+      "brand": "Yealink",
+      "category": "bundles",
+      "platform": "Windows",
+      "roomSizes": [
+        "huddle",
+        "medium"
+      ],
+      "price": 2350,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.bhphotovideo.com/images/fb/yealink_mvc_s40_c5u_000_mvc_s40_microsoft_teams_1911120.jpg",
+      "description": "The Yealink MVC S40-C5U is a cutting-edge solution for Microsoft Teams Rooms, designed to enhance collaboration and is ideal for small to medium-sized meeting spaces.This set includes the new generation mini-PC MCore 4, the large-screen touch panel MTouch Plus, the SmartVision 40 all-in-one smart audio-video device, and the intelligent detect sensor RoomSensor, working in unison to enable seamless automation and intelligent integration within conference rooms.\nPowered by the Intel Ultra5 125H processor, the MCore 4 delivers outstanding data processing capabilities and powerful AI computing power, offering every participant an immersive video conferencing experience. The SmartVision 40, as an integrated audio-video device, boasts dual 48MP lenses and a 6-meter voice pickup range, supporting cutting-edge tracking features like IntelliFocus, Intelliframe, and Video Fence, ensuring no detail is overlooked. Additionally, to streamline meeting control, the MTouch Plus features an 11.6-inch touch interface for intuitive device operation, while the RoomSensor intelligently detects the occupancy status of the meeting room and simultaneously displays real-time environmental metrics like temperature and humidity on the MTouch Plus interface, delivering intelligent room management solutions. The MVC S40-C5U bundle supports both wired and wireless screen sharing, enabling participants to share content effortlessly and enhance collaboration. Meanwhile, the system's simple deployment and remote management capabilities make it easy to install and maintain, reducing setup time and operational complexity."
+    },
+    {
+      "id": "yl-s50",
+      "sku": "MVC-S50-C5U-000",
+      "name": "MVC S50 Teams Rooms System",
+      "brand": "Yealink",
+      "category": "bundles",
+      "platform": "Windows",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 3511,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://storage.googleapis.com/img.broadbandbuyer.com/products/yealink/55431/mvc-s50-c5u-000-img1.png",
+      "description": "Windows MTR kit: A50 video bar (USB mode), MCore 4 mini-PC, MTouch Plus panel and RoomSensor."
+    },
+    {
+      "id": "yl-s80",
+      "sku": "MVC-S80-C5U-000",
+      "name": "MVC S80 Teams Rooms System",
+      "brand": "Yealink",
+      "category": "bundles",
+      "platform": "Windows",
+      "roomSizes": [
+        "large"
+      ],
+      "price": 3767,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.thetelecomspot.com/cdn/shop/files/yealink-mvc-s80-c5u-000-teams-room-system-for-large-roomsmvcs80-c5u-000-9581479.png?v=1754030624&width=700",
+      "description": "Windows MTR kit for medium-large rooms; pairs with AVBridge, CM20 and CS10 ceiling audio."
+    },
+    {
+      "id": "yl-s90",
+      "sku": "MVC-S90-C5U-004",
+      "name": "MVC S90 Teams Rooms System",
+      "brand": "Yealink",
+      "category": "bundles",
+      "platform": "Windows",
+      "roomSizes": [
+        "boardroom"
+      ],
+      "price": 5431,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.bhphotovideo.com/images/fb/yealink_mvc_s90_c5u_004_mvc_s90_microsoft_teams_1911123.jpg",
+      "description": "Windows MTR kit with dual 4K AI cameras and MCore 4 for extra-large rooms and boardrooms."
+    },
+    {
+      "id": "yl-mvc860",
+      "sku": "MVC860-C5-000",
+      "name": "MVC860 Base Kit",
+      "brand": "Yealink",
+      "category": "bundles",
+      "platform": "Windows",
+      "roomSizes": [
+        "large"
+      ],
+      "price": 1996,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.bournesuperstore.com.au/assets/full/MVC860-C5-000.jpg?20240928170321",
+      "description": "Windows MTR base kit: UVC86 camera, MCore Pro, MTouch Plus and RoomSensor (audio chosen separately)."
+    },
+    {
+      "id": "yl-mvc960",
+      "sku": "MVC960",
+      "name": "MVC960 Teams Rooms System",
+      "brand": "Yealink",
+      "category": "bundles",
+      "platform": "Windows",
+      "roomSizes": [
+        "boardroom"
+      ],
+      "price": 5849,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.yealink.com/website-service/attachment/product/image/20220606/20220606091539809c49f104147aabbd63a619e048056.png",
+      "description": "Windows MTR system with dual cameras for extra-large spaces."
+    },
+    {
+      "id": "yl-mcorekit",
+      "sku": "MCoreKit-C5U",
+      "name": "MCore Kit C5U",
+      "brand": "Yealink",
+      "category": "control",
+      "platform": "Windows",
+      "roomSizes": [
+        "medium",
+        "large",
+        "boardroom"
+      ],
+      "price": 2042,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.yealink.com/website-service/attachment/product/image/20250711/2025071104551330209a6.png",
+      "description": "The MCore Kit serves as the core component of Yealink’s 4th-gen MVC system, featuring a high-performance AI PC MCore 4 and a touch panel MTouch Plus. Designed specifically for video conference rooms, it offers a flexible and reliable deployment solution. Additionally, MCore 4 supports Windows Autopilot, enabling IT administrators to automatically configure new devices for seamless integration into the existing IT ecosystem."
+    },
+    {
+      "id": "yl-uvc86",
+      "sku": "UVC86",
+      "name": "UVC86 4K Dual-Eye PTZ Camera",
+      "brand": "Yealink",
+      "category": "video",
+      "platform": "N/A",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 1333,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.yealink.com/website-service/attachment/product/image/20241024/20241024084119101833f.png",
+      "description": "4K dual-eye tracking camera, 12x optical zoom, auto-framing, speaker and presenter tracking."
+    },
+    {
+      "id": "yl-uvc40",
+      "sku": "UVC40",
+      "name": "UVC40 4K USB Video Bar",
+      "brand": "Yealink",
+      "category": "video",
+      "platform": "BYOD",
+      "roomSizes": [
+        "focus",
+        "huddle"
+      ],
+      "price": 486,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.yealink.com/website-service/attachment/product/image/20240729/202407290219261871f4f.png",
+      "description": "With 4K ultra-HD imaging, a 120° super-wide-angle lens and Smart Area Exposure technology, the UVC40 E2 ensures exceptional video quality. AI features like Auto Framing and Speaker Tracking enhance conferencing, while 8 MEMS microphones and a high-fidelity speaker ensure excellent call quality. Manageable via Yealink Device Management Platform, UVC40 E2 is your choice for seamless collaboration."
+    },
+    {
+      "id": "yl-mtower",
+      "sku": "MTower",
+      "name": "MTower AI Camera 360° Camera",
+      "brand": "Yealink",
+      "category": "video",
+      "platform": "N/A",
+      "roomSizes": [
+        "large",
+        "boardroom"
+      ],
+      "price": 1400,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": false,
+      "imageUrl": "https://www.yealink.com/website-service/attachment/editor/upload/image/20250317/1742177114142073362.png",
+      "description": "MTower center-view camera, with AI-powered Best-view Switching, that seamlessly switch front & center perspectives for an unparalleled, instant, immersive meeting experience, powered by the Qualcomm® QCS8550 processor*."
+    },
+    {
+      "id": "yl-sv40",
+      "sku": "SmartVision-40",
+      "name": "SmartVision 40 360° Camera",
+      "brand": "Yealink",
+      "category": "video",
+      "platform": "N/A",
+      "roomSizes": [
+        "huddle",
+        "medium"
+      ],
+      "price": 760,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": false,
+      "imageUrl": "https://images.visunextgroup.com/images/D/original/2/1000031626/en/yealink/Yealink-SmartVision-40-All-in-one-AI-USB-Video-Bar.jpg",
+      "description": "AI-powered 360° centre-of-table camera."
+    },
+    {
+      "id": "yl-cm20",
+      "sku": "CM20",
+      "name": "SkySound CM20 Ceiling Microphone",
+      "brand": "Yealink",
+      "category": "audio",
+      "platform": "N/A",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 603,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://cdn.mwave.com.au/images/400/yealink_cm20_skysound_ceiling_microphone_ac82889_52896.jpg",
+      "description": "Yealink CM20 features an 80mm low-profile design and a detachable magnetic cover with a snap-on attachment (available in black and white color options). The overall design ensures seamless integration and aesthetic appeal, while facilitating effortless deployment and maintaining the integrity of the ceiling."
+    },
+    {
+      "id": "yl-cm50",
+      "sku": "CM50",
+      "name": "SkySound CM50 Dante Ceiling Microphone",
+      "brand": "Yealink",
+      "category": "audio",
+      "platform": "N/A",
+      "roomSizes": [
+        "large",
+        "boardroom"
+      ],
+      "price": 3546,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.yealink.com/website-service/attachment/product/image/20241122/20241122062243522b95b.jpg",
+      "description": "With 127 wide-range microphones, the Yealink CM50 provides superior audio coverage within a 5-meter radius*. Its advanced beamforming technology supports customized pickup zones, allowing precise control over audio capture and reducing unwanted background noise.\n\nThe CM50 integrates AI-based sound optimization to ensure immersive sound quality. With support for Dante protocol , it ensures easy integration with other Dante-compatible devices."
+    },
+    {
+      "id": "yl-cs10",
+      "sku": "CS10",
+      "name": "SkySound CS10 Ceiling Speaker",
+      "brand": "Yealink",
+      "category": "audio",
+      "platform": "N/A",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 271,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://cdn.mwave.com.au/images/400/yealink_cs10_skysound_ceiling_speaker_ac82890_4667.jpg",
+      "description": "Network ceiling loudspeaker for SkySound standard solution."
+    },
+    {
+      "id": "yl-cs10d",
+      "sku": "CS10-D",
+      "name": "SkySound CS10-D Dante Ceiling Speaker",
+      "brand": "Yealink",
+      "category": "audio",
+      "platform": "N/A",
+      "roomSizes": [
+        "large",
+        "boardroom"
+      ],
+      "price": 500,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": true,
+      "active": true,
+      "imageUrl": "https://www.323.tv/wp-content/uploads/2025/09/Yealink-CS10-D.jpg",
+      "description": "Dante ceiling loudspeaker for SkySound premium solution."
+    },
+    {
+      "id": "yl-avbridge",
+      "sku": "AVBridge",
+      "name": "AVBridge Audio Bridge",
+      "brand": "Yealink",
+      "category": "audio",
+      "platform": "N/A",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 592,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.yealink.com/website-service/attachment/product/image/20250905/202509050828231099969.png",
+      "description": "AVBridge is a compact audio box and A/V signal extender, designed for modern meeting spaces to deliver reliable and high-quality audio-visual integration. It includes essential audio processing capabilities and combines 4×4 Dante channels, Phoenix connector analog I/O, and USB extension to bridge cameras, DSPs, or other AV devices. It is ideal for pairing with Yealink CM20/CM50 ceiling microphones to form a standard video conferencing audio solution, while also offering a step-up upgrade from integrated audio paths to enable more professional Pro AV room scenarios."
+    },
+    {
+      "id": "yl-ap08",
+      "sku": "AP08",
+      "name": "AP08 Audio Processor",
+      "brand": "Yealink",
+      "category": "audio",
+      "platform": "N/A",
+      "roomSizes": [
+        "large",
+        "boardroom"
+      ],
+      "price": 1477,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://images.shopcdn.co.uk/53/db/53dbf522d789885f433a2014dca477b4/2048x2048/webp/fit?quality=80&compression=80",
+      "description": "Yealink AP08 DSP, a cutting-edge digital signal processor, elevates your meeting experience with exceptional automation capabilities. It supports up to 16x16 Dante audio channels, including 8 optimized channels with dynamic AEC, intelligent noise cancellation, and reverberation suppression, as well as 4x4 analog audio channels and two simultaneous USB 3.0 Type-B device interfaces. The AP08 DSP ensures smooth audio transmission and crystal-clear communication. Additionally, it provides PoE+ power for up to three audio devices, simplifying your deployment even further.\n\nWith Yealink Room Designer software, the AP08 DSP seamlessly integrates automated design and acoustic environment-adaptive technology, setting a new standard for audio quality and convenience in your meetings. Choose Yealink AP08 DSP for an unparalleled audio experience."
+    },
+    {
+      "id": "yl-avhub",
+      "sku": "AVHub",
+      "name": "AVHub",
+      "brand": "Yealink",
+      "category": "audio",
+      "platform": "N/A",
+      "roomSizes": [
+        "large",
+        "boardroom"
+      ],
+      "price": 1208,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://cdn11.bigcommerce.com/s-u3uxlvxq3h/images/stencil/1280x1280/products/9892/42139/Yealink-AVHub-Front__03615.1679079283.jpg?c=1",
+      "description": "AVHub is an audio-video processor designed for large conference rooms and the conference industry. It supports multiple cameras, microphones, and speakers, enhancing PC performance. Devices connect to AVHub via Ethernet cables with Power over Ethernet (PoE), simplifying wiring and allowing centralized management. Users can adjust camera layouts with the Yealink plugin before or during Microsoft Teams Rooms (MTR) meetings."
+    },
+    {
+      "id": "yl-vcm35",
+      "sku": "VCM35",
+      "name": "VCM35 Table Microphone",
+      "brand": "Yealink",
+      "category": "audio",
+      "platform": "N/A",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 197,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.yealink.com/website-service/attachment/product/image/20241030/202410300845158532c4c.png",
+      "description": "Wired table microphone for MVC systems."
+    },
+    {
+      "id": "yl-vcm36w",
+      "sku": "VCM36-W",
+      "name": "VCM36-W Wireless Microphone",
+      "brand": "Yealink",
+      "category": "audio",
+      "platform": "N/A",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 199,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": false,
+      "imageUrl": "https://www.yealink.com/website-service/attachment/product/image/20241030/2024103007594861092da.png",
+      "description": "Wireless table microphone for MVC systems."
+    },
+    {
+      "id": "yl-vcm38",
+      "sku": "VCM38",
+      "name": "VCM38 Ceiling Microphone",
+      "brand": "Yealink",
+      "category": "audio",
+      "platform": "N/A",
+      "roomSizes": [
+        "large",
+        "boardroom"
+      ],
+      "price": 325,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://cdn11.bigcommerce.com/s-mfdnq9n4ks/images/stencil/1280x1280/products/6197/28886/VCM38_1__14425.1721122584.jpg?c=2",
+      "description": "Ceiling microphone array for MVC systems."
+    },
+    {
+      "id": "yl-mspk2",
+      "sku": "MSpeaker-II",
+      "name": "MSpeaker II Soundbar",
+      "brand": "Yealink",
+      "category": "audio",
+      "platform": "N/A",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 199,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.sauditk.com/wp-content/uploads/2022/11/Yealink-MSpeaker-II.png",
+      "description": "Soundbar for MVC systems."
+    },
+    {
+      "id": "yl-mtouchplus",
+      "sku": "MTouch-Plus",
+      "name": "MTouch Plus 11.6\" Touch Panel",
+      "brand": "Yealink",
+      "category": "control",
+      "platform": "Windows",
+      "roomSizes": [
+        "medium",
+        "large",
+        "boardroom"
+      ],
+      "price": 826,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.bhphotovideo.com/images/fb/yealink_mtouch_plus_11_6_mtouch_plus_touch_1842159.jpg",
+      "description": "11.6-inch touch console for Yealink MVC Windows systems."
+    },
+    {
+      "id": "yl-wpp30",
+      "sku": "WPP30",
+      "name": "WPP30 Wireless Presentation Pod",
+      "brand": "Yealink",
+      "category": "control",
+      "platform": "N/A",
+      "roomSizes": [
+        "huddle",
+        "medium",
+        "large",
+        "boardroom"
+      ],
+      "price": 351,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": false,
+      "imageUrl": "https://www.yealink.com/website-service/attachment/product/image/20220801/202208010615489320df14a124e2fb9151624cc4aafe1.png",
+      "description": "4K plug-in wireless content sharing pod (not sold in the US)."
+    },
+    {
+      "id": "yl-roomsensor",
+      "sku": "RoomSensor",
+      "name": "RoomSensor",
+      "brand": "Yealink",
+      "category": "control",
+      "platform": "N/A",
+      "roomSizes": [
+        "huddle",
+        "medium",
+        "large",
+        "boardroom"
+      ],
+      "price": 67,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": false,
+      "imageUrl": "https://www.yealink.com/website-service/attachment/product/image/20241030/20241030065910209d99d.png",
+      "description": "Occupancy and environment sensor for Teams Rooms."
+    },
+    {
+      "id": "nt-barbyod",
+      "sku": "Neat-Bar-BYOD",
+      "name": "Neat Bar BYOD",
+      "brand": "Neat",
+      "category": "bundles",
+      "platform": "BYOD",
+      "roomSizes": [
+        "focus",
+        "huddle"
+      ],
+      "price": 540,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": false,
+      "imageUrl": "https://cdn.neat.no/v3/assets/img/products-compare/picture-bar-select--2x.jpg",
+      "description": "BYOD video bar – connect a laptop and start meetings."
+    },
+    {
+      "id": "nt-bar2",
+      "sku": "Neat-Bar-Gen2",
+      "name": "Neat Bar Gen 2 + Neat Pad",
+      "brand": "Neat",
+      "category": "bundles",
+      "platform": "Android",
+      "roomSizes": [
+        "huddle",
+        "medium"
+      ],
+      "price": 3287,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://devicescatalogimages.teams.cdn.office.net/deviceimagesprod/61451/NeatBar2-en-us-20240612T162643-2.png_Large.png",
+      "description": "Everyday meeting room video bar with Neat Pad controller."
+    },
+    {
+      "id": "nt-barpro",
+      "sku": "Neat-Bar-Pro",
+      "name": "Neat Bar Pro + Neat Pad",
+      "brand": "Neat",
+      "category": "bundles",
+      "platform": "Android",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 4573,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://marketplacecdn.azureedge.net/deviceimagesprod/1145/BarPro%2BPad-en-us-20221212T191620-1.png",
+      "description": "Video bar for larger spaces (up to ~30 people), drives up to 3 displays."
+    },
+    {
+      "id": "nt-board32",
+      "sku": "Neat-Board-32",
+      "name": "Neat Board 32",
+      "brand": "Neat",
+      "category": "bundles",
+      "platform": "Android",
+      "roomSizes": [
+        "focus",
+        "huddle"
+      ],
+      "price": 3053,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://cdn.neat.no/ndk/1.0/assets/img/card-product/board-32--2x.jpg",
+      "description": "NEW – compact 32\" all-in-one touch video device for desks and small spaces; newly Teams certified."
+    },
+    {
+      "id": "nt-board50",
+      "sku": "Neat-Board-50",
+      "name": "Neat Board 50",
+      "brand": "Neat",
+      "category": "bundles",
+      "platform": "Android",
+      "roomSizes": [
+        "huddle",
+        "medium"
+      ],
+      "price": 4564,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://cdn.neat.no/ndk/1.0/assets/img/card-product-large/board-50-hover--2x.webp",
+      "description": "50\" 4K touch all-in-one video collaboration board."
+    },
+    {
+      "id": "nt-boardpro",
+      "sku": "Neat-Board-Pro",
+      "name": "Neat Board Pro",
+      "brand": "Neat",
+      "category": "bundles",
+      "platform": "Android",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 5838,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.smartboards.com/cdn/shop/files/neat-studio-boardpro-adaptivestand-1-microsoft.png?v=1739904101&width=1214",
+      "description": "65\" multi-touch all-in-one board for larger meeting spaces."
+    },
+    {
+      "id": "nt-frame",
+      "sku": "Neat-Frame",
+      "name": "Neat Frame",
+      "brand": "Neat",
+      "category": "video",
+      "platform": "Android",
+      "roomSizes": [
+        "focus"
+      ],
+      "price": 454,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://cdn.neat.no/v3/content/assets/img/neat-frame/buy-img-frame-agnostic--1680w.jpg",
+      "description": "15.6\" portrait all-in-one device for personal spaces and reception areas."
+    },
+    {
+      "id": "nt-center",
+      "sku": "Neat-Center",
+      "name": "Neat Center",
+      "brand": "Neat",
+      "category": "video",
+      "platform": "N/A",
+      "roomSizes": [
+        "medium",
+        "large",
+        "boardroom"
+      ],
+      "price": 1713,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://cdn.neat.no/ndk/1.0/assets/img/card-product-large/center-hover--2x.webp",
+      "description": "360° companion camera/mic with 3 cameras and 16 mics; individual framing; PoE."
+    },
+    {
+      "id": "nt-pad2",
+      "sku": "Neat-Pad-Gen2",
+      "name": "Neat Pad Gen 2",
+      "brand": "Neat",
+      "category": "control",
+      "platform": "Android",
+      "roomSizes": [
+        "huddle",
+        "medium",
+        "large"
+      ],
+      "price": 799,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.sauditk.com/wp-content/uploads/2024/07/Neat-Bar-Gen-2-with-Neat-Pad-700x525.webp",
+      "description": "NEW – meeting controller and room scheduler for everyday rooms."
+    },
+    {
+      "id": "nt-padpro",
+      "sku": "Neat-Pad-Pro",
+      "name": "Neat Pad Pro 10\"",
+      "brand": "Neat",
+      "category": "control",
+      "platform": "Android",
+      "roomSizes": [
+        "medium",
+        "large",
+        "boardroom"
+      ],
+      "price": 961,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.vds.ae/wp-content/uploads/neat-pad-pro-dubai.jpg",
+      "description": "NEW – 10-inch controller and scheduling display for larger rooms."
+    },
+    {
+      "id": "nt-vesa",
+      "sku": "Neat-VESA-Kit",
+      "name": "Neat VESA Screen Mount Kit",
+      "brand": "Neat",
+      "category": "mounts",
+      "platform": "N/A",
+      "roomSizes": [
+        "huddle",
+        "medium",
+        "large"
+      ],
+      "price": 0,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": true,
+      "active": true,
+      "imageUrl": "https://cdn11.bigcommerce.com/s-3sfzx7sur0/images/stencil/original/products/222/483/Bar_2_Screenmount__49784.1741016597.jpg?c=1",
+      "description": "VESA mount kit for Neat Bars."
+    },
+    {
+      "id": "nt-boardstand",
+      "sku": "Neat-Board-Pro-Stand",
+      "name": "Neat Board Pro Adaptive Stand",
+      "brand": "Neat",
+      "category": "mounts",
+      "platform": "N/A",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 2024,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://cdn.neat.no/v3/content/assets/img/neat-board-pro/buy-img-board-pro-adaptive_stand-1-0--1680w.jpg",
+      "description": "Adaptive floor stand for Neat Board Pro."
+    },
+    {
+      "id": "pl-x32",
+      "sku": "Studio-X32",
+      "name": "Poly Studio X32 + TC10",
+      "brand": "Poly",
+      "category": "bundles",
+      "platform": "Android",
+      "roomSizes": [
+        "huddle"
+      ],
+      "price": 2666,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.pbtech.com/imgprod/V/C/VCHPE6593742__1.jpg?h=2599650739",
+      "description": "All-in-one 4K video bar for small rooms; PoE++ powered; with TC10 controller."
+    },
+    {
+      "id": "pl-x52",
+      "sku": "Studio-X52",
+      "name": "Poly Studio X52 + TC10",
+      "brand": "Poly",
+      "category": "bundles",
+      "platform": "Android",
+      "roomSizes": [
+        "medium"
+      ],
+      "price": 3600,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://devicescatalogimages.teams.cdn.office.net/deviceimagesprod/31251/PolyStudioX52%2BTC10-en-us-20240111T020229-4.png",
+      "description": "4K 20MP video bar with DirectorAI for medium rooms; with TC10 controller."
+    },
+    {
+      "id": "pl-x72",
+      "sku": "Studio-X72",
+      "name": "Poly Studio X72 + TC10",
+      "brand": "Poly",
+      "category": "bundles",
+      "platform": "Android",
+      "roomSizes": [
+        "large"
+      ],
+      "price": 5200,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://hiav.co.uk/media/maujykaz/poly-studio-x72-tc10.png",
+      "description": "Dual 20MP camera video bar for large rooms; with TC10 controller."
+    },
+    {
+      "id": "pl-g9kit",
+      "sku": "Studio-Base-Kit-G9-Plus",
+      "name": "Poly Studio Base Kit G9 Plus",
+      "brand": "Poly",
+      "category": "control",
+      "platform": "Windows",
+      "roomSizes": [
+        "medium",
+        "large",
+        "boardroom"
+      ],
+      "price": 2035,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.323.tv/wp-content/uploads/2024/06/Poly-Studio-G9-Plus-Kit-800x800.jpg",
+      "description": "HP Mini IP Conferencing PC with Teams Rooms + TC10 – pair with a V-series bar or E-series camera."
+    },
+    {
+      "id": "pl-studio5",
+      "sku": "Studio-5-Room-Compute",
+      "name": "HP Poly Studio 5 Room Compute",
+      "brand": "Poly",
+      "category": "control",
+      "platform": "Windows",
+      "roomSizes": [
+        "huddle",
+        "medium"
+      ],
+      "price": 0,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": true,
+      "active": true,
+      "imageUrl": "https://www.323.tv/wp-content/uploads/2026/06/Poly-Studio-5-main.jpg",
+      "description": "NEW 2026 – Teams Rooms compute, Intel Core Ultra 5 with NPU, 16GB, PoE port for TC10."
+    },
+    {
+      "id": "pl-studio7",
+      "sku": "Studio-7-Room-Compute",
+      "name": "HP Poly Studio 7 Room Compute",
+      "brand": "Poly",
+      "category": "control",
+      "platform": "Windows",
+      "roomSizes": [
+        "large",
+        "boardroom"
+      ],
+      "price": 0,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": true,
+      "active": true,
+      "imageUrl": "https://www.hp.com/content/dam/sites/worldwide/poly/video-conferencing/modular/studio-room-compute/image@2x.png",
+      "description": "NEW 2026 – Teams Rooms compute, Intel Core Ultra 7 with NPU, 32GB, supports up to 4 TC10."
+    },
+    {
+      "id": "pl-tc10",
+      "sku": "TC10",
+      "name": "Poly TC10 Touch Controller",
+      "brand": "Poly",
+      "category": "control",
+      "platform": "N/A",
+      "roomSizes": [
+        "huddle",
+        "medium",
+        "large",
+        "boardroom"
+      ],
+      "price": 773,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.bhphotovideo.com/images/images2500x2500/hp_poly_875k5aa_poly_tc10_touch_controller_1801955.jpg",
+      "description": "10-inch touch controller for Poly room systems."
+    },
+    {
+      "id": "pl-v12",
+      "sku": "Studio-V12",
+      "name": "Poly Studio V12 USB Video Bar",
+      "brand": "Poly",
+      "category": "video",
+      "platform": "Windows",
+      "roomSizes": [
+        "focus",
+        "huddle"
+      ],
+      "price": 798,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.hp.com/content/dam/sites/worldwide/poly/video-conferencing/usb/studio-v12/KSP_01_desktop@2x.jpg",
+      "description": "4K USB video bar for small rooms (with Windows compute)."
+    },
+    {
+      "id": "pl-v52",
+      "sku": "Studio-V52",
+      "name": "Poly Studio V52 USB Video Bar",
+      "brand": "Poly",
+      "category": "video",
+      "platform": "Windows",
+      "roomSizes": [
+        "medium"
+      ],
+      "price": 2341,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.323.tv/wp-content/uploads/2024/03/Poly-Studio-V52.jpg",
+      "description": "4K 20MP USB video bar with DirectorAI for medium rooms."
+    },
+    {
+      "id": "pl-v72",
+      "sku": "Studio-V72",
+      "name": "Poly Studio V72 USB Video Bar",
+      "brand": "Poly",
+      "category": "video",
+      "platform": "Windows",
+      "roomSizes": [
+        "large"
+      ],
+      "price": 3680,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://devicescatalogimages.teams.cdn.office.net/deviceimagesprod/81520/StudioV72-en-us-20241023T065012-1.png",
+      "description": "Dual 4K USB video bar for large rooms."
+    },
+    {
+      "id": "pl-e60",
+      "sku": "Studio-E60",
+      "name": "Poly Studio E60 PTZ Camera",
+      "brand": "Poly",
+      "category": "video",
+      "platform": "N/A",
+      "roomSizes": [
+        "large",
+        "boardroom"
+      ],
+      "price": 1216,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.hp.com/content/dam/sites/worldwide/poly/video-conferencing/cameras-and-accessories/studio-e60/Poly_Studio_E60_Hero_Desktop@2x.jpg",
+      "description": "12x optical PTZ camera with presenter tracking; needs separate audio."
+    },
+    {
+      "id": "pl-e70",
+      "sku": "Studio-E70",
+      "name": "Poly Studio E70 Camera",
+      "brand": "Poly",
+      "category": "video",
+      "platform": "N/A",
+      "roomSizes": [
+        "large",
+        "boardroom"
+      ],
+      "price": 0,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": true,
+      "active": true,
+      "imageUrl": "https://www.bhphotovideo.com/images/fb/hp_poly_842f8aa_poly_studio_e70_smart_1802098.jpg",
+      "description": "Dual 4K 20MP camera for large rooms; needs separate audio."
+    },
+    {
+      "id": "pl-a2bridge",
+      "sku": "Studio-A2-Audio-Bridge",
+      "name": "HP Poly Studio A2 Audio Bridge",
+      "brand": "Poly",
+      "category": "audio",
+      "platform": "N/A",
+      "roomSizes": [
+        "medium",
+        "large",
+        "boardroom"
+      ],
+      "price": 395,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.323.tv/wp-content/uploads/2025/06/Poly-Studio-A2-Bridge-Hero.jpg",
+      "description": "PoE audio bridge connecting A2 table mics to Poly video systems (up to 32 channels)."
+    },
+    {
+      "id": "pl-a2mic",
+      "sku": "B22X6AA#AC3",
+      "name": "HP Poly Studio A2 Table Microphone (Black)",
+      "brand": "Poly",
+      "category": "audio",
+      "platform": "N/A",
+      "roomSizes": [
+        "medium",
+        "large",
+        "boardroom"
+      ],
+      "price": 239,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://cdn.cs.1worldsync.com/a8/5c/a85ce9b1-f8b8-4c4c-a713-51cf3e035d5e.jpg",
+      "description": "4-element table mic, daisy-chain up to 8 (X/V52 & 72 support up to 4). White version B22X4AA."
+    },
+    {
+      "id": "pl-ipceil",
+      "sku": "875S1AA",
+      "name": "Poly IP Ceiling Microphone Array",
+      "brand": "Poly",
+      "category": "audio",
+      "platform": "N/A",
+      "roomSizes": [
+        "large",
+        "boardroom"
+      ],
+      "price": 215,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.bhphotovideo.com/images/fb/hp_poly_875s1aa_poly_ip_ceiling_microphone_1801971.jpg",
+      "description": "IP ceiling microphone array for Poly systems."
+    },
+    {
+      "id": "pl-xmic",
+      "sku": "875M6AA",
+      "name": "Poly Studio X50/X52/X70/X72 Table Microphone",
+      "brand": "Poly",
+      "category": "audio",
+      "platform": "N/A",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 145,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.broadbandbuyer.com/images/products/274/45676/45676-img1.png",
+      "description": "Expansion table microphone for Studio X/USB bars."
+    },
+    {
+      "id": "YL-SV80",
+      "sku": "YL-SV80",
+      "name": "SmartVision 80 69° PTZ Camera",
+      "brand": "Yealink",
+      "category": "video",
+      "platform": "Windows",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 2200,
+      "shipping": 40,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": true,
+      "active": true,
+      "imageUrl": "https://www.misco.co.uk/img/0~E35FF878-F658-4BCF-A0A9-285DD80CD8EA~640~480~1",
+      "description": "SmartVision 80 is a cutting-edge intelligent four-lens camera designed specifically for large conference rooms. Featured with an innovative four-lens setup comprising a PTZ camera and three electronic cameras, ensuring comprehensive coverage of each corner of the meeting rooms. Powered by an outstanding maximum 20x optical zoom, clear close-up shots of attendees can be effortlessly captured, regardless of their distance from the camera.\nTo cater to diverse tracking requirements across various scenarios, the SmartVision 80 is equipped with a range of advanced tracking features, ensuring an immersive and engaging meeting experience. Designed to adapt seamlessly to different types of meeting rooms, it supports multiple installation options and comes with an adjustable bracket for precise control over the shooting range."
+    },
+    {
+      "id": "yl-mbpro86",
+      "sku": "MeetingBoard-Pro 86",
+      "name": "86\" MeetingBoard Pro + Stand",
+      "brand": "Yealink",
+      "category": "bundles",
+      "platform": "Android",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 5600,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.yealink.com/website-service/attachment/product/image/20250520/202505200937123170e33.png",
+      "description": "All-in-one video conferencing board with interactive whiteboard."
+    },
+    {
+      "id": "yl-mbpro75",
+      "sku": "MeetingBoard-Pro 75",
+      "name": "75\" MeetingBoard Pro + Stand",
+      "brand": "Yealink",
+      "category": "bundles",
+      "platform": "Android",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 4250,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.yealink.com/website-service/attachment/product/image/20250520/202505200937123170e33.png",
+      "description": "All-in-one video conferencing board with interactive whiteboard."
+    },
+    {
+      "id": "yl-mbpro65",
+      "sku": "MeetingBoard-Pro 65",
+      "name": "65\" MeetingBoard Pro + Stand",
+      "brand": "Yealink",
+      "category": "bundles",
+      "platform": "Android",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 3300,
+      "shipping": 0,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://www.yealink.com/website-service/attachment/product/image/20250520/202505200937123170e33.png",
+      "description": "All-in-one video conferencing board with interactive whiteboard."
+    },
+    {
+      "id": "yl-mspro",
+      "sku": "MSpeakerPro",
+      "name": "Yealink Mspeaker",
+      "brand": "Yealink",
+      "category": "audio",
+      "platform": "N/A",
+      "roomSizes": [
+        "medium",
+        "large"
+      ],
+      "price": 350,
+      "shipping": 40,
+      "labourHours": 0,
+      "warranty": true,
+      "sample": false,
+      "active": true,
+      "imageUrl": "https://storage.googleapis.com/img.broadbandbuyer.com/products/yealink/56199/mspeaker-pro-img1.png",
+      "description": "MSpeaker Pro is a video conference speaker specifically designed by Yealink for medium-sized meeting rooms. Equipped with four high-quality speaker units, it delivers crystal-clear and vibrant voice reproduction, making communication feel like it's happening right in front of you. While delivering exceptional sound quality, MSpeaker Pro also offers an impressive audio experience with a maximum output of 95dB, effortlessly filling every corner of the meeting room with clear, powerful sound. Additionally, MSpeaker Pro supports star-topology cascading, allowing you to expand audio coverage by linking multiple devices in a star configuration for an even more immersive and flexible experience.\nMSpeaker Pro utilizes a standard PoE/PoE+ power supply, requiring only a single network cable to simultaneously transmit both power and data. This eliminates wiring complications and ensures a clean and tidy meeting room environment."
+    }
+  ],
+  "bundles": [
+    {
+      "id": "b1",
+      "name": "Yealink A25 BYOD",
+      "brand": "Yealink",
+      "roomSize": "focus",
+      "platform": "BYOD",
+      "price": 1200,
+      "shipping": 120,
+      "labourHours": 4,
+      "badge": "",
+      "active": true,
+      "imageUrl": "https://www.onedirect.co.uk/media/catalog/product/cache/2f7023eb5bae250f2b8e08d957542350/a/2/a25_ctp252.jpg",
+      "description": "BYOD video bar for focus rooms.",
+      "includes": [
+        "Video bar",
+        "USB connectivity"
+      ],
+      "items": []
+    },
+    {
+      "id": "b2",
+      "name": "Neat Bar BYOD",
+      "brand": "Neat",
+      "roomSize": "focus",
+      "platform": "BYOD",
+      "price": 700,
+      "shipping": 120,
+      "labourHours": 4,
+      "badge": "",
+      "active": true,
+      "imageUrl": "https://cdn.neat.no/v3/assets/img/products-compare/picture-bar-select--2x.jpg",
+      "description": "Compact BYOD bar.",
+      "includes": [
+        "Video bar"
+      ],
+      "items": []
+    },
+    {
+      "id": "b3",
+      "name": "Yealink A25 + CTP25",
+      "brand": "Yealink",
+      "roomSize": "huddle",
+      "platform": "Android",
+      "price": 1800,
+      "shipping": 250,
+      "labourHours": 10,
+      "badge": "Standard",
+      "active": true,
+      "imageUrl": "https://store.midwich.com/media/image/gallery/Yealink-YEAA25031-2.jpg",
+      "description": "Teams Room for huddle spaces. Display not included.",
+      "includes": [
+        "Video bar",
+        "Touch panel"
+      ],
+      "items": []
+    },
+    {
+      "id": "b4",
+      "name": "Neat Bar Gen 2 + Touch Panel",
+      "brand": "Neat",
+      "roomSize": "huddle",
+      "platform": "Android",
+      "price": 3200,
+      "shipping": 250,
+      "labourHours": 10,
+      "badge": "",
+      "active": true,
+      "imageUrl": "https://devicescatalogimages.teams.cdn.office.net/deviceimagesprod/61451/NeatBar2-en-us-20240612T162643-2.png_Large.png",
+      "description": "Display not included.",
+      "includes": [
+        "Video bar",
+        "Touch panel"
+      ],
+      "items": []
+    },
+    {
+      "id": "b5",
+      "name": "Yealink MeetingBar A50 + CTP25",
+      "brand": "Yealink",
+      "roomSize": "medium",
+      "platform": "Android",
+      "price": 2200,
+      "shipping": 400,
+      "labourHours": 18,
+      "badge": "Standard",
+      "active": true,
+      "imageUrl": "https://cdn.cs.1worldsync.com/33/8c/338c11c9-6f49-484c-975a-c65365b08085.jpg",
+      "description": "Standard medium room. Display not included.",
+      "includes": [
+        "MeetingBar A50",
+        "CTP25 touch panel"
+      ],
+      "items": []
+    },
+    {
+      "id": "b6",
+      "name": "Neat Bar Pro + Touch Panel + Neat Center",
+      "brand": "Neat",
+      "roomSize": "medium",
+      "platform": "Android",
+      "price": 8000,
+      "shipping": 400,
+      "labourHours": 18,
+      "badge": "",
+      "active": true,
+      "imageUrl": "https://marketplacecdn.azureedge.net/deviceimagesprod/1145/BarPro%2BPad-en-us-20221212T191620-1.png",
+      "description": "Display not included.",
+      "includes": [
+        "Neat Bar Pro",
+        "Touch panel",
+        "Neat Center"
+      ],
+      "items": []
+    },
+    {
+      "id": "b7",
+      "name": "Yealink MVC S50 + Ceiling Audio",
+      "brand": "Yealink",
+      "roomSize": "large",
+      "platform": "Windows",
+      "price": 13000,
+      "shipping": 600,
+      "labourHours": 33,
+      "badge": "",
+      "active": true,
+      "imageUrl": "https://storage.googleapis.com/img.broadbandbuyer.com/products/yealink/55431/mvc-s50-c5u-000-img1.png",
+      "description": "Windows MTR with ceiling speakers and mics. Display not included.",
+      "includes": [
+        "Camera / compute",
+        "Touch panel",
+        "Ceiling speakers",
+        "Ceiling microphones"
+      ],
+      "items": []
+    },
+    {
+      "id": "b8",
+      "name": "Neat Bar Pro + 2× Neat Center",
+      "brand": "Neat",
+      "roomSize": "boardroom",
+      "platform": "Android",
+      "price": 10000,
+      "shipping": 900,
+      "labourHours": 60,
+      "badge": "",
+      "active": true,
+      "imageUrl": "https://cdn.neat.no/v3/content/assets/img/neat-bar-pro/buy-img-bar-pro-1-agnostic--840w.jpg",
+      "description": "Display not included.",
+      "includes": [
+        "Neat Bar Pro",
+        "Touch panel",
+        "2× Neat Center"
+      ],
+      "items": []
+    },
+    {
+      "id": "b9",
+      "name": "Q-SYS Custom Solution (Premium)",
+      "brand": "Q-SYS",
+      "roomSize": "boardroom",
+      "platform": "Windows",
+      "price": 40000,
+      "shipping": 900,
+      "labourHours": 60,
+      "badge": "Survey required",
+      "active": true,
+      "imageUrl": "https://www.getdante.com/wp-content/uploads/2024/01/Core-NV-Right.png",
+      "description": "Bespoke boardroom solution. Site survey and design required.",
+      "includes": [
+        "Design",
+        "DSP",
+        "Cameras",
+        "Ceiling audio",
+        "Control"
+      ],
+      "items": []
+    }
+  ]
+}

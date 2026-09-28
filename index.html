@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AV Equipment Estimator</title>
+<!--
+  ==========================================================================
+  AV EQUIPMENT ESTIMATOR  -  single-file, no external libraries
+  --------------------------------------------------------------------------
+  HOW DATA LOADS (in this order):
+    1. Local admin draft (localStorage) - only on the admin's own browser
+    2. CONFIG_URL (a published catalogue.json on SharePoint) - if set
+    3. DEFAULT_CONFIG embedded below
+  To publish changes for everyone: Admin > Import / Export > Download
+  catalogue.json, then either upload it to CONFIG_URL or paste it over
+  DEFAULT_CONFIG in this file.
+  Product images are linked from manufacturer / reseller websites. For
+  reliability, host your own copies on SharePoint and update Image URL.
+  ==========================================================================
+-->
+<style>
+:root{--brand:#0078d4;--brand-dark:#005a9e;--ink:#1f2937;--muted:#6b7280;--line:#e5e7eb;--bg:#f3f4f6;--ok:#107c10;--warn:#b45309;--danger:#c42b1c}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:13px}
+.hidden{display:none!important}
+
+/* ---------- Header ---------- */
+.topbar{background:linear-gradient(135deg,var(--brand),var(--brand-dark));color:#fff;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.topbar-inner{display:flex;align-items:center;gap:14px;padding:10px 20px;flex-wrap:wrap}
+.logo{font-weight:700;font-size:17px;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.logo small{display:block;font-weight:400;font-size:11px;opacity:.85}
+.search{flex:1;min-width:220px;display:flex}
+.search input{flex:1;padding:10px 14px;border:none;border-radius:6px 0 0 6px;font-size:14px;outline:none}
+.search button{border:none;background:#ffb900;padding:0 16px;border-radius:0 6px 6px 0;font-size:16px}
+.hdr-select{display:flex;flex-direction:column;font-size:11px;opacity:.95}
+.hdr-select select{margin-top:2px;padding:6px 8px;border-radius:5px;border:none;min-width:120px}
+.basket-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:8px;padding:7px 14px;display:flex;align-items:center;gap:10px;font-size:13px}
+.basket-btn:hover{background:rgba(255,255,255,.28)}
+.basket-btn .count{background:#ffb900;color:#111;border-radius:12px;padding:1px 8px;font-weight:700}
+.basket-btn .total{font-weight:700}
+.gear{background:none;border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:50%;width:36px;height:36px;font-size:17px}
+.gear:hover{background:rgba(255,255,255,.2)}
+.catbar{background:rgba(0,0,0,.18);display:flex;gap:4px;padding:4px 16px;overflow-x:auto}
+.catbar button{background:none;border:none;color:#fff;padding:6px 12px;border-radius:4px;white-space:nowrap;font-size:13px}
+.catbar button:hover{background:rgba(255,255,255,.15)}
+.catbar button.active{background:#fff;color:var(--brand-dark);font-weight:600}
+.active-room{background:#fff8e1;color:#5c4400;padding:6px 20px;font-size:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.active-room select{padding:3px 6px;border-radius:4px;border:1px solid #d6c07a}
+
+/* ---------- Layout ---------- */
+.layout{display:grid;grid-template-columns:230px 1fr;gap:18px;padding:18px 20px;max-width:1500px;margin:0 auto}
+@media(max-width:860px){.layout{grid-template-columns:1fr}.sidebar{order:2}}
+.sidebar{background:#fff;border-radius:10px;padding:16px;height:fit-content;position:sticky;top:130px}
+.sidebar h4{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:14px 0 8px}
+.sidebar h4:first-child{margin-top:0}
+.sidebar label{display:flex;align-items:center;gap:7px;padding:3px 0;font-size:13px;cursor:pointer}
+.sidebar select{width:100%;padding:6px;border:1px solid var(--line);border-radius:5px}
+.link-btn{background:none;border:none;color:var(--brand);font-size:12px;padding:0;margin-top:10px}
+
+.hero{background:linear-gradient(120deg,#e8f2fc,#fff);border:1px solid #d6e8f7;border-radius:10px;padding:18px 22px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.hero h2{font-size:19px;color:var(--brand-dark)}
+.hero p{color:var(--muted);margin-top:4px;font-size:13px}
+.results-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;color:var(--muted);font-size:13px;flex-wrap:wrap;gap:8px}
+.results-meta select{padding:5px 8px;border:1px solid var(--line);border-radius:5px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.card{background:#fff;border-radius:10px;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--line);transition:box-shadow .2s,transform .2s}
+.card:hover{box-shadow:0 6px 18px rgba(0,0,0,.09);transform:translateY(-2px)}
+.card-img{height:150px;display:flex;align-items:center;justify-content:center;font-size:56px;background:#fff;border-bottom:1px solid #f1f1f1;position:relative;cursor:pointer;overflow:hidden}
+.card-img img{max-width:92%;max-height:92%;object-fit:contain}
+.badge{position:absolute;top:8px;left:8px;background:#ffb900;color:#111;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;text-transform:uppercase}
+.badge.sample{left:auto;right:8px;background:#fde68a;color:#78350f}
+.card-body{padding:12px 14px;display:flex;flex-direction:column;gap:5px;flex:1}
+.card-brand{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.card-name{font-weight:600;font-size:14px;line-height:1.3;cursor:pointer}
+.card-name:hover{color:var(--brand)}
+.pills{display:flex;gap:4px;flex-wrap:wrap}
+.pill{font-size:10px;padding:2px 7px;border-radius:10px;background:#eef2f7;color:#374151;font-weight:600}
+.pill.android{background:#e8f5e9;color:#2e7d32}.pill.windows{background:#e3f2fd;color:#1565c0}.pill.byod{background:#fff3e0;color:#e65100}
+.price{font-size:20px;font-weight:700;margin-top:auto}
+.price small{font-size:11px;color:var(--muted);font-weight:400;display:block}
+.card-actions{display:flex;gap:6px;margin-top:6px}
+.qty-mini{width:52px;padding:7px;border:1px solid var(--line);border-radius:6px;text-align:center}
+.btn{border:none;border-radius:6px;padding:8px 14px;font-weight:600;font-size:13px}
+.btn-primary{background:#ffb900;color:#111;flex:1}.btn-primary:hover{background:#f0a800}
+.btn-blue{background:var(--brand);color:#fff}.btn-blue:hover{background:var(--brand-dark)}
+.btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}.btn-ghost:hover{background:#f9fafb}
+.btn-danger{background:#fff;border:1px solid var(--danger);color:var(--danger)}
+.btn-green{background:var(--ok);color:#fff}
+.empty{text-align:center;padding:60px 20px;color:var(--muted);background:#fff;border-radius:10px}
+
+/* ---------- Drawer (basket) ---------- */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:90;display:none}
+.overlay.open{display:block}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(560px,100%);background:#fff;z-index:100;transform:translateX(100%);transition:transform .25s ease;display:flex;flex-direction:column;box-shadow:-6px 0 24px rgba(0,0,0,.15)}
+.drawer.open{transform:none}
+.drawer-head{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.drawer-head h3{font-size:17px}
+.x{background:none;border:none;font-size:22px;color:var(--muted)}
+.drawer-body{flex:1;overflow-y:auto;padding:14px 20px}
+.drawer-foot{border-top:1px solid var(--line);padding:14px 20px;display:flex;gap:8px;flex-wrap:wrap}
+.room{border:1px solid var(--line);border-radius:8px;margin-bottom:12px;overflow:hidden}
+.room.is-active{border-color:#ffb900;box-shadow:0 0 0 2px #fff1c2}
+.room-head{background:#f9fafb;padding:8px 10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.room-head input.rname{flex:1;min-width:120px;font-weight:600;border:1px solid transparent;background:transparent;padding:4px 6px;border-radius:4px}
+.room-head input.rname:hover,.room-head input.rname:focus{border-color:var(--line);background:#fff}
+.room-head .rqty{width:52px;padding:4px;border:1px solid var(--line);border-radius:4px;text-align:center}
+.room-head small{color:var(--muted)}
+.line{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:8px 10px;border-top:1px solid #f1f1f1;font-size:13px}
+.line .nm{line-height:1.3}.line .nm small{color:var(--muted);display:block;font-size:11px}
+.line input{width:50px;padding:4px;border:1px solid var(--line);border-radius:4px;text-align:center}
+.line .amt{font-weight:600;min-width:70px;text-align:right}
+.line .rm{background:none;border:none;color:var(--danger);font-size:16px}
+.room-empty{padding:10px;color:var(--muted);font-size:12px;font-style:italic}
+.summary{background:#f8fbff;border:1px solid #d6e8f7;border-radius:8px;padding:12px 14px;margin:6px 0 14px}
+.summary .row{display:flex;justify-content:space-between;padding:4px 0;font-size:13px}
+.summary .row small{color:var(--muted)}
+.summary .row.total{border-top:2px solid var(--brand);margin-top:6px;padding-top:8px;font-size:17px;font-weight:700;color:var(--brand-dark)}
+.opt{display:flex;align-items:center;gap:8px;font-size:13px;margin:6px 0}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.form-grid .full{grid-column:1/-1}
+.fld label{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.fld input,.fld textarea,.fld select{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:5px}
+.section-title{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:14px 0 8px;font-weight:600}
+.note{font-size:11.5px;color:var(--muted);line-height:1.5}
+
+/* ---------- Modals ---------- */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:30px 12px;overflow-y:auto}
+.modal.open{display:flex}
+.modal-box{background:#fff;border-radius:12px;width:100%;max-width:760px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+.modal-box.wide{max-width:1280px}
+.modal-head{padding:14px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}
+.modal-body{padding:18px 20px}
+.detail{display:grid;grid-template-columns:260px 1fr;gap:20px}
+@media(max-width:700px){.detail{grid-template-columns:1fr}}
+.detail .card-img{height:230px;border-radius:10px;font-size:90px;cursor:default;border:1px solid var(--line)}
+.detail ul{margin:8px 0 0 18px;line-height:1.7}
+.fbt{margin-top:18px;border-top:1px solid var(--line);padding-top:12px}
+.fbt-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px dashed #eee;font-size:13px;gap:8px}
+
+/* ---------- Admin ---------- */
+.admin-head{background:linear-gradient(135deg,#374151,#1f2937);color:#fff}
+.admin-head .x{color:#fff}
+.tabs{display:flex;gap:2px;border-bottom:2px solid var(--line);padding:0 16px;background:#fafafa;flex-wrap:wrap}
+.tabs button{background:none;border:none;padding:10px 14px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;font-size:13px}
+.tabs button.active{color:var(--brand);border-bottom-color:var(--brand)}
+.admin-body{padding:16px 20px;max-height:66vh;overflow:auto}
+.admin-foot{padding:12px 20px;border-top:1px solid var(--line);display:flex;gap:10px;align-items:center;background:#fafafa;flex-wrap:wrap}
+.status{margin-left:auto;font-weight:600;color:var(--ok);font-size:13px}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{background:#f3f4f6;text-align:left;padding:6px;font-size:11px;text-transform:uppercase;color:var(--muted);position:sticky;top:0;white-space:nowrap}
+.tbl td{padding:4px;border-bottom:1px solid #f1f1f1;vertical-align:top}
+.tbl input[type=text],.tbl input[type=number],.tbl input[type=email],.tbl select,.tbl textarea{width:100%;padding:5px 6px;border:1px solid var(--line);border-radius:4px;font-size:12px}
+.tbl input[type=number]{min-width:70px}
+.tbl .del{background:#fee2e2;border:none;color:var(--danger);border-radius:4px;width:26px;height:26px}
+.admin-card{border:1px solid var(--line);border-radius:8px;padding:12px;margin-bottom:12px;background:#fcfcfc}
+.admin-card .grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-bottom:8px}
+.banner{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;padding:8px 12px;border-radius:6px;font-size:12px;margin-bottom:12px}
+.banner.info{background:#eff6ff;border-color:#bfdbfe;color:#1e3a8a}
+.toolbar{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center}
+.toolbar input{padding:6px 8px;border:1px solid var(--line);border-radius:5px;min-width:200px}
+.pw-box{max-width:360px;text-align:center}
+.pw-box input{width:100%;padding:10px;border:2px solid var(--line);border-radius:8px;text-align:center;margin:12px 0}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;z-index:300;opacity:0;transition:opacity .25s;pointer-events:none}
+.toast.show{opacity:1}
+
+/* ---------- Print / PDF ---------- */
+#printArea{display:none}
+@media print{
+  @page{size:A4;margin:12mm}
+  body{background:#fff}
+  body>*:not(#printArea){display:none!important}
+  #printArea{display:block!important;font-size:11px;color:#111}
+  #printArea h1{font-size:18px;color:var(--brand-dark)}
+  #printArea .phead{border-bottom:3px solid var(--brand);padding-bottom:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-end}
+  #printArea table{width:100%;border-collapse:collapse;margin:6px 0 12px}
+  #printArea th{background:#eef4fb!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;text-align:left;padding:5px;font-size:10px;border-bottom:1px solid #bbb}
+  #printArea td{padding:4px 5px;border-bottom:1px solid #e5e5e5}
+  #printArea .r{text-align:right}
+  #printArea h3{font-size:12px;margin-top:10px;color:var(--brand-dark)}
+  #printArea .meta td{border:none;padding:2px 8px 2px 0}
+  #printArea .tot td{font-weight:700;border-top:2px solid var(--brand);font-size:12px}
+  #printArea .disc{font-size:9.5px;color:#555;border:1px solid #ddd;padding:8px;border-radius:4px;margin-top:10px}
+  #printArea .room-block{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="logo">🖥️ <div><span id="appTitle">AV Equipment Estimator</span><small id="appSub">Internal budget estimates</small></div></div>
+    <div class="search"><input id="searchInput" type="search" placeholder="Search equipment, brand, SKU…"><button id="searchBtn" title="Search">🔍</button></div>
+    <div class="hdr-select">Country / labour rate<select id="countrySelect"></select></div>
+    <div class="hdr-select">Currency<select id="currencySelect"></select></div>
+    <button class="basket-btn" id="basketBtn">🛒 <span>Estimate</span><span class="count" id="basketCount">0</span><span class="total" id="basketTotal">£0</span></button>
+    <button class="gear" id="adminBtn" title="Admin">⚙</button>
+  </div>
+  <nav class="catbar" id="catBar"></nav>
+  <div class="active-room">📍 Adding items to: <select id="activeRoomSelect"></select><button class="link-btn" id="addRoomTop" style="margin:0">+ New room</button><span class="note" style="color:#5c4400">Tip: create one room per space so the estimate is broken down clearly.</span></div>
+</header>
+
+<!-- ================= MAIN ================= -->
+<div class="layout">
+  <aside class="sidebar">
+    <h4>Room size</h4><select id="fRoom"><option value="">Any size</option></select>
+    <h4>Platform</h4><select id="fPlatform"><option value="">Any platform</option></select>
+    <h4>Brand</h4><div id="fBrands"></div>
+    <button class="link-btn" id="clearFilters">Clear all filters</button>
+  </aside>
+  <main>
+    <div class="hero" id="hero">
+      <div><h2>Start with a room bundle</h2><p>Bundles include the core kit for a room type. Add displays, mounts and extras, then export a PDF budget estimate.</p></div>
+      <button class="btn btn-blue" data-goto="bundles">Browse bundles →</button>
+    </div>
+    <div class="results-meta"><span id="resultCount"></span>
+      <label>Sort: <select id="sortSel"><option value="rel">Featured</option><option value="lo">Price: low to high</option><option value="hi">Price: high to low</option><option value="az">Name A–Z</option></select></label>
+    </div>
+    <div class="grid" id="grid"></div>
+  </main>
+</div>
+
+<!-- ================= BASKET DRAWER ================= -->
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head"><h3>🛒 Your estimate</h3><button class="x" id="closeDrawer">×</button></div>
+  <div class="drawer-body">
+    <div id="roomsWrap"></div>
+    <button class="btn btn-ghost" id="addRoomBtn" style="width:100%;margin-bottom:12px">+ Add another room</button>
+    <div class="opt"><label for="optWarranty" id="optWarrantyLbl">Extended warranty</label><select id="optWarranty" style="padding:5px 8px;border:1px solid var(--line);border-radius:5px"><option value="0">No extended warranty</option><option value="1">1 year</option><option value="3" selected>3 years</option></select></div>
+    <div class="summary" id="summary"></div>
+    <div class="section-title">Project details (shown on the PDF)</div>
+    <div class="form-grid">
+      <div class="fld"><label>Project name</label><input id="pName" placeholder="e.g. Toronto Floor 3 refresh"></div>
+      <div class="fld"><label>Site / building</label><input id="pSite"></div>
+      <div class="fld"><label>Requested by</label><input id="pBy"></div>
+      <div class="fld"><label>Email</label><input id="pEmail" type="email"></div>
+      <div class="fld full"><label>Notes / requirements</label><textarea id="pNotes" rows="2"></textarea></div>
+    </div>
+    <p class="note" id="disclaimerSmall"></p>
+  </div>
+  <div class="drawer-foot">
+    <button class="btn btn-blue" id="pdfBtn">📄 Export PDF</button>
+    <button class="btn btn-ghost" id="csvBtn">⬇ CSV</button>
+    <button class="btn btn-green" id="quoteBtn">✉ Request official quote</button>
+    <button class="btn btn-danger" id="clearBtn" style="margin-left:auto">Clear</button>
+  </div>
+</aside>
+
+<!-- ================= PRODUCT DETAIL ================= -->
+<div class="modal" id="detailModal"><div class="modal-box">
+  <div class="modal-head"><strong id="dTitle"></strong><button class="x" data-close="detailModal">×</button></div>
+  <div class="modal-body" id="dBody"></div>
+</div></div>
+
+<!-- ================= PASSWORD ================= -->
+<div class="modal" id="pwModal" style="align-items:center"><div class="modal-box pw-box"><div class="modal-body">
+  <h3>🔒 Admin access</h3><input type="password" id="pwInput" placeholder="Password">
+  <div id="pwErr" class="note hidden" style="color:var(--danger);margin-bottom:8px">Incorrect password</div>
+  <button class="btn btn-blue" id="pwOk">Unlock</button> <button class="btn btn-ghost" data-close="pwModal">Cancel</button>
+</div></div></div>
+
+<!-- ================= ADMIN ================= -->
+<div class="modal" id="adminModal"><div class="modal-box wide">
+  <div class="modal-head admin-head"><strong>⚙ Admin – catalogue, pricing &amp; labour rates</strong><button class="x" id="adminClose">×</button></div>
+  <div class="tabs" id="adminTabs"></div>
+  <div class="admin-body" id="adminBody"></div>
+  <div class="admin-foot">
+    <button class="btn btn-green" id="adminSave">✓ Save changes</button>
+    <button class="btn btn-ghost" id="adminCancel">Cancel</button>
+    <span class="status" id="adminStatus"></span>
+  </div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+<div id="printArea"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* =====================================================================
+   1. SETTINGS YOU MAY WANT TO CHANGE IN CODE
+   ===================================================================== */
+var CONFIG_URL = "";          // e.g. "https://kenvue.sharepoint.com/sites/AV/SiteAssets/catalogue.json" (leave "" to use embedded data)
+var STORAGE_KEY = "avEstimator_config_v1";
+var BASKET_KEY  = "avEstimator_basket_v1";
+
+/* =====================================================================
+   2. DEFAULT (EMBEDDED) CATALOGUE
+   All prices are in the BASE currency (settings.baseCurrency).
+   Items flagged sample:true show a "Sample price" badge until you
+   replace the price in Admin and untick "Sample".
+   ===================================================================== */
+var DEFAULT_CONFIG = {
+  version: 1,
+  settings: {
+    appTitle: "AV Equipment Estimator",
+    appSubtitle: "Meeting Room Technology – internal budget estimates",
+    brandColor: "#0078d4",
+    baseCurrency: "GBP",
+    warrantyPct: 20,
+    warrantyYears: 3,
+    projectMgmtPct: 0,
+    contingencyPct: 0,
+    teamEmail: "",
+    quoteSubject: "Request for official AV quotation",
+    adminPassword: "admin",
+    disclaimer: "These figures are estimates only and may vary based on vendor quotes, site conditions, cabling requirements and local labour rates. This is not a quotation or purchase order. Prices exclude VAT/sales tax. An official quote must be obtained from an approved AV vendor before any purchase."
+  },
+  currencies: [
+    {code:"GBP", symbol:"£", rate:1},
+    {code:"USD", symbol:"$", rate:1.27},
+    {code:"EUR", symbol:"€", rate:1.17}
+  ],
+  roomSizes: [
+    {id:"focus",     name:"Focus / Phone Booth (1–2)"},
+    {id:"huddle",    name:"Huddle (3–5)"},
+    {id:"medium",    name:"Medium (6–10)"},
+    {id:"large",     name:"Large (11–20)"},
+    {id:"boardroom", name:"Boardroom (15–25)"}
+  ],
+  platforms: ["Android","Windows","BYOD","N/A"],
+  categories: [
+    {id:"bundles",  name:"Room Bundles",            icon:"📦"},
+    {id:"displays", name:"Displays",                icon:"📺"},
+    {id:"video",    name:"Video Bars & Cameras",    icon:"🎥"},
+    {id:"audio",    name:"Audio",                   icon:"🎙️"},
+    {id:"control",  name:"Touch Panels & Control",  icon:"🖲️"},
+    {id:"mounts",   name:"Mounts & Stands",         icon:"🧱"},
+    {id:"cabling",  name:"Cabling & Connectivity",  icon:"🔌"},
+    {id:"services", name:"Services",                icon:"🛠️"}
+  ],
+  /* Countries: labourRate = per hour in base currency; shippingMult multiplies each item's shipping; hardwareUpliftPct adds regional price uplift */
+  countries: [
+    {code:"GB", name:"United Kingdom", region:"EMEA",  currency:"GBP", labourRate:85,  minLabour:0, shippingMult:1.0, hardwareUpliftPct:0, vendorName:"", vendorEmail:""},
+    {code:"IE", name:"Ireland",        region:"EMEA",  currency:"EUR", labourRate:85,  minLabour:0, shippingMult:1.0, hardwareUpliftPct:0, vendorName:"", vendorEmail:""},
+    {code:"BE", name:"Belgium",        region:"EMEA",  currency:"EUR", labourRate:90,  minLabour:0, shippingMult:1.0, hardwareUpliftPct:0, vendorName:"", vendorEmail:""},
+    {code:"NL", name:"Netherlands",    region:"EMEA",  currency:"EUR", labourRate:90,  minLabour:0, shippingMult:1.0, hardwareUpliftPct:0, vendorName:"", vendorEmail:""},
+    {code:"DE", name:"Germany",        region:"EMEA",  currency:"EUR", labourRate:90,  minLabour:0, shippingMult:1.0, hardwareUpliftPct:0, vendorName:"", vendorEmail:""},
+    {code:"FR", name:"France",         region:"EMEA",  currency:"EUR", labourRate:90,  minLabour:0, shippingMult:1.0, hardwareUpliftPct:0, vendorName:"", vendorEmail:""},
+    {code:"SK", name:"Slovakia",       region:"EMEA",  currency:"EUR", labourRate:65,  minLabour:0, shippingMult:1.0, hardwareUpliftPct:0, vendorName:"", vendorEmail:""},
+    {code:"US", name:"United States",  region:"North America", currency:"USD", labourRate:125, minLabour:0, shippingMult:1.3, hardwareUpliftPct:0, vendorName:"", vendorEmail:""},
+    {code:"CA", name:"Canada",         region:"North America", currency:"USD", labourRate:110, minLabour:0, shippingMult:1.3, hardwareUpliftPct:0, vendorName:"", vendorEmail:""},
+    {code:"MX", name:"Mexico",         region:"Latin America", currency:"USD", labourRate:70,  minLabour:0, shippingMult:1.5, hardwareUpliftPct:0, vendorName:"", vendorEmail:""},
+    {code:"BR", name:"Brazil",         region:"Latin America", currency:"USD", labourRate:75,  minLabour:0, shippingMult:1.5, hardwareUpliftPct:0, vendorName:"", vendorEmail:""},
+    {code:"CN", name:"China",          region:"APAC",  currency:"USD", labourRate:65,  minLabour:0, shippingMult:1.6, hardwareUpliftPct:0, vendorName:"", vendorEmail:""},
+    {code:"IN", name:"India",          region:"APAC",  currency:"USD", labourRate:45,  minLabour:0, shippingMult:1.6, hardwareUpliftPct:0, vendorName:"", vendorEmail:""},
+    {code:"AU", name:"Australia",      region:"APAC",  currency:"USD", labourRate:95,  minLabour:0, shippingMult:1.6, hardwareUpliftPct:0, vendorName:"", vendorEmail:""}
+  ],
+  /* Products: price & shipping in base currency; labourHours = install time per unit */
+  products: [
+    {id:"d55",  sku:"LG-55UR640S",  name:'55" Commercial Display',  brand:"LG", category:"displays", platform:"N/A", roomSizes:["huddle"],               price:700,   shipping:60,  labourHours:1.5, warranty:true,  sample:false, active:true, imageUrl:"https://screenmoove.com/cdn/shop/products/1623387929262_25010_ffd68ce7-9fbb-4386-94d9-d85bb56d9b50_1055x700.webp?v=1695137613", description:"LG 55\" UR640S UHD commercial display (4K, 400 nits, webOS)."},
+    {id:"d65",  sku:"LG-65UR640S",  name:'65" Commercial Display',  brand:"LG", category:"displays", platform:"N/A", roomSizes:["huddle","medium"],      price:1000,  shipping:80,  labourHours:2,   warranty:true,  sample:false, active:true, imageUrl:"https://cdn11.bigcommerce.com/s-mfdnq9n4ks/images/stencil/1280x1280/products/7435/33167/65UR640S3__90788.1677467060.1280.1280__70211.1736152031.1280.1280__19565.1736156985.jpg?c=2", description:"LG 65\" UR640S UHD commercial display (4K, 400 nits, webOS)."},
+    {id:"d75",  sku:"LG-75UR640S",  name:'75" Commercial Display',  brand:"LG", category:"displays", platform:"N/A", roomSizes:["medium","large"],       price:1700,  shipping:110, labourHours:2.5, warranty:true,  sample:false, active:true, imageUrl:"https://www.lg.com/content/dam/channelbtb/lgcom/global/images/business/information-display/digital-signage/86ur640s0zd_aek_ekhq_global_b/gallery/large04.jpg", description:"LG 75\" UR640S UHD commercial display (4K, 330 nits, webOS)."},
+    {id:"d86",  sku:"LG-86UR640S",  name:'86" Commercial Display',  brand:"LG", category:"displays", platform:"N/A", roomSizes:["large"],                price:3000,  shipping:160, labourHours:3,   warranty:true,  sample:false, active:true, imageUrl:"https://www.lg.com/content/dam/channelbtb/lgcom/global/images/business/information-display/digital-signage/86ur640s0zd_aek_ekhq_global_b/gallery/large09.jpg", description:"LG 86\" UR640S UHD commercial display (4K, 330 nits, webOS)."},
+    {id:"d98",  sku:"LG-98UH5J-H",  name:'98" Commercial Display',  brand:"LG", category:"displays", platform:"N/A", roomSizes:["boardroom"],            price:6000,  shipping:300, labourHours:4,   warranty:true,  sample:false, active:true, imageUrl:"https://www.lg.com/content/dam/channel/wcms/in/images/business/98uh5j-h_atrz_eail_in_b/gallery/98UH5J-H-Digital-Signage-Right-View-DZ-02.jpg?w=800", description:"LG 98\" UH5J-H UHD signage (4K, 500 nits, 24/7, anti-glare)."},
+    {id:"d110", sku:"LG-110UH5Q-H", name:'110" Commercial Display', brand:"LG", category:"displays", platform:"N/A", roomSizes:["boardroom"],            price:10000, shipping:450, labourHours:6,   warranty:true,  sample:false, active:true, imageUrl:"https://www.lg.com/ae/images/business/digital-signage/md08802865/gallery/medium02.jpg", description:"LG 110\" UH5Q-H UHD signage (4K, 500 nits, 24/7, anti-glare)."},
+    {id:"led136",sku:"LG-LAEC015-GN",name:'136" LED Wall',          brand:"LG", category:"displays", platform:"N/A", roomSizes:["boardroom"],            price:30000, shipping:900, labourHours:16,  warranty:true,  sample:false, active:true, imageUrl:"https://www.lg.com/content/dam/channel/wcms/es/images/business/laec015-gn_aeu_eees_es_b/gallery/large04.jpg", description:"LG 136\" All-in-One LED (LAEC series) with built-in controller and speakers. Requires site survey."},
+    {id:"ya50", sku:"YL-A50",  name:"MeetingBar A50",          brand:"Yealink", category:"video",    platform:"Android", roomSizes:["medium","large"],   price:1800,  shipping:40,  labourHours:3,   warranty:true,  sample:true,  active:true, imageUrl:"https://www.yealink.com/website-service/attachment/product/image/20241021/20241021034339307bbfb.png", description:"All-in-one Android video bar for Teams Rooms."},
+    {id:"ctp25",sku:"YL-CTP25",name:"CTP25 Touch Panel",       brand:"Yealink", category:"control",  platform:"Android", roomSizes:["huddle","medium","large"], price:400, shipping:15, labourHours:1, warranty:true, sample:true, active:true, imageUrl:"https://www.yealink.com/website-service/attachment/product/image/20241106/202411060735136513687.png", description:"Teams Rooms touch console."},
+    {id:"mxa",  sku:"SH-MXA920",name:"Ceiling Microphone Array",brand:"Shure",  category:"audio",    platform:"N/A", roomSizes:["large","boardroom"],     price:3500,  shipping:40,  labourHours:4,   warranty:true,  sample:true,  active:true, imageUrl:"https://products.shureweb.eu/cdn-cgi/image/width=1380,height=1380,format=auto/shure_product_db/product_images/files/8cd/c7f/ca-/original/1478ae57d758ff403e3dda4b026b2272.webp", description:"Ceiling array microphone for large spaces (requires DSP)."},
+    {id:"p300", sku:"SH-P300", name:"IntelliMix P300 Audio Processor", brand:"Shure", category:"audio", platform:"N/A", roomSizes:["large","boardroom"], price:1500,  shipping:25,  labourHours:3,   warranty:true,  sample:true,  active:true, imageUrl:"https://cdn.cs.1worldsync.com/96/7b/967bc9b0-1279-4c4a-a93e-fc19039b5553.jpg", description:"Audio DSP for ceiling microphone systems."},
+    {id:"spk",  sku:"SPK-CEIL",name:"Ceiling Speakers (pair)", brand:"Generic", category:"audio",    platform:"N/A", roomSizes:["large","boardroom"],     price:450,   shipping:20,  labourHours:3,   warranty:true,  sample:true,  active:true, imageUrl:"", description:"Pair of ceiling speakers."},
+    {id:"wm",   sku:"MNT-WALL",name:"Display Wall Mount",      brand:"Generic", category:"mounts",   platform:"N/A", roomSizes:["huddle","medium","large","boardroom"], price:150, shipping:20, labourHours:1, warranty:false, sample:true, active:true, imageUrl:"", description:"Fixed/tilt wall mount for displays up to 86\"."},
+    {id:"ms",   sku:"MNT-STAND",name:"Mobile Display Stand",   brand:"Generic", category:"mounts",   platform:"N/A", roomSizes:["medium","large"],        price:600,   shipping:60,  labourHours:1,   warranty:false, sample:true,  active:true, imageUrl:"", description:"Mobile trolley for displays / meeting boards."},
+    {id:"cab",  sku:"CAB-KIT", name:"Room Cabling Kit",        brand:"Generic", category:"cabling",  platform:"N/A", roomSizes:["huddle","medium","large","boardroom"], price:120, shipping:10, labourHours:1, warranty:false, sample:true, active:true, imageUrl:"", description:"HDMI / USB / network patch leads for a standard room."},
+    {id:"cat6", sku:"CAB-CAT6",name:"New Cat6 Data Point",     brand:"Generic", category:"cabling",  platform:"N/A", roomSizes:[],                        price:90,    shipping:0,   labourHours:1.5, warranty:false, sample:true,  active:true, imageUrl:"", description:"Supply and terminate a new data point (per point)."},
+    {id:"srv",  sku:"SRV-SURVEY",name:"Site Survey",           brand:"Service", category:"services", platform:"N/A", roomSizes:[],                        price:0,     shipping:0,   labourHours:4,   warranty:false, sample:true,  active:true, imageUrl:"", description:"On-site survey before installation. Charged at the local labour rate."},
+    {id:"dec",  sku:"SRV-DECOM",name:"Decommission Legacy Equipment", brand:"Service", category:"services", platform:"N/A", roomSizes:[],          price:0,     shipping:0,   labourHours:3,   warranty:false, sample:true,  active:true, imageUrl:"", description:"Removal and disposal of existing AV equipment (per room)."}
+  ],
+  /* Bundles: if price > 0 it is used as the bundle price; otherwise price = sum of items.
+     includes = free-text list shown to users; items = catalogue products (optional). */
+  bundles: [
+    {id:"b1", name:"Yealink A25 BYOD",                      brand:"Yealink", roomSize:"focus",  platform:"BYOD",    price:1200, shipping:120, labourHours:4,  badge:"",            active:true, imageUrl:"https://www.onedirect.co.uk/media/catalog/product/cache/2f7023eb5bae250f2b8e08d957542350/a/2/a25_ctp252.jpg", description:"BYOD video bar for focus rooms.", includes:["Video bar","USB connectivity"], items:[]},
+    {id:"b2", name:"Neat Bar BYOD",                          brand:"Neat",    roomSize:"focus",  platform:"BYOD",    price:700,  shipping:120, labourHours:4,  badge:"",            active:true, imageUrl:"https://cdn.neat.no/v3/assets/img/products-compare/picture-bar-select--2x.jpg", description:"Compact BYOD bar.", includes:["Video bar"], items:[]},
+    {id:"b3", name:"Yealink A25 + CTP25",                    brand:"Yealink", roomSize:"huddle", platform:"Android", price:1800, shipping:250, labourHours:10, badge:"Standard",    active:true, imageUrl:"https://store.midwich.com/media/image/gallery/Yealink-YEAA25031-2.jpg", description:"Teams Room for huddle spaces. Display not included.", includes:["Video bar","Touch panel"], items:[]},
+    {id:"b4", name:"Neat Bar Gen 2 + Touch Panel",           brand:"Neat",    roomSize:"huddle", platform:"Android", price:3200, shipping:250, labourHours:10, badge:"",            active:true, imageUrl:"https://devicescatalogimages.teams.cdn.office.net/deviceimagesprod/61451/NeatBar2-en-us-20240612T162643-2.png_Large.png", description:"Display not included.", includes:["Video bar","Touch panel"], items:[]},
+    {id:"b5", name:"Yealink MeetingBar A50 + CTP25",         brand:"Yealink", roomSize:"medium", platform:"Android", price:2200, shipping:400, labourHours:18, badge:"Standard",    active:true, imageUrl:"https://cdn.cs.1worldsync.com/33/8c/338c11c9-6f49-484c-975a-c65365b08085.jpg", description:"Standard medium room. Display not included.", includes:["MeetingBar A50","CTP25 touch panel"], items:[]},
+    {id:"b6", name:"Neat Bar Pro + Touch Panel + Neat Center",brand:"Neat",   roomSize:"medium", platform:"Android", price:8000, shipping:400, labourHours:18, badge:"",            active:true, imageUrl:"https://marketplacecdn.azureedge.net/deviceimagesprod/1145/BarPro%2BPad-en-us-20221212T191620-1.png", description:"Display not included.", includes:["Neat Bar Pro","Touch panel","Neat Center"], items:[]},
+    {id:"b7", name:"Yealink MVC S50 + Ceiling Audio",        brand:"Yealink", roomSize:"large",  platform:"Windows", price:13000,shipping:600, labourHours:33, badge:"",            active:true, imageUrl:"https://storage.googleapis.com/img.broadbandbuyer.com/products/yealink/55431/mvc-s50-c5u-000-img1.png", description:"Windows MTR with ceiling speakers and mics. Display not included.", includes:["Camera / compute","Touch panel","Ceiling speakers","Ceiling microphones"], items:[]},
+    {id:"b8", name:"Neat Bar Pro + 2× Neat Center",          brand:"Neat",    roomSize:"boardroom",platform:"Android",price:10000,shipping:900,labourHours:60, badge:"",           active:true, imageUrl:"https://cdn.neat.no/v3/content/assets/img/neat-bar-pro/buy-img-bar-pro-1-agnostic--840w.jpg", description:"Display not included.", includes:["Neat Bar Pro","Touch panel","2× Neat Center"], items:[]},
+    {id:"b9", name:"Q-SYS Custom Solution (Premium)",        brand:"Q-SYS",   roomSize:"boardroom",platform:"Windows",price:40000,shipping:900,labourHours:60, badge:"Survey required",active:true, imageUrl:"https://www.getdante.com/wp-content/uploads/2024/01/Core-NV-Right.png", description:"Bespoke boardroom solution. Site survey and design required.", includes:["Design","DSP","Cameras","Ceiling audio","Control"], items:[]}
+  ]
+};
+
+/* =====================================================================
+   3. STATE
+   ===================================================================== */
+var cfg, draft = null, adminTab = "products", unlocked = false;
+var ui = {cat:"all", q:"", room:"", platform:"", brands:{}, sort:"rel"};
+var basket = loadBasket();
+
+function clone(o){return JSON.parse(JSON.stringify(o));}
+function uid(p){return (p||"id")+Math.random().toString(36).slice(2,8);}
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function $(id){return document.getElementById(id);}
+function num(v,d){var n=parseFloat(v);return isNaN(n)?(d||0):n;}
+function toast(msg){var t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove("show");},2200);}
+
+function loadBasket(){
+  try{var b=JSON.parse(localStorage.getItem(BASKET_KEY));if(b&&b.rooms&&b.rooms.length)return b;}catch(e){}
+  var r={id:uid("r"),name:"Room 1",qty:1,items:[]};
+    return {rooms:[r],activeRoom:r.id,country:"",currency:"",warranty:3,project:{}};
+}
+/* Warranty years selected in the basket (0, 1 or 3). Old baskets saved true/false are converted. */
+function wYears(){var w=basket.warranty;if(w===true)return 3;if(!w)return 0;return Math.min(3,Math.max(0,parseInt(w,10)||0));}
+function saveBasket(){try{localStorage.setItem(BASKET_KEY,JSON.stringify(basket));}catch(e){}}
+
+function normalise(c){
+  var d=DEFAULT_CONFIG;
+  ["settings","currencies","roomSizes","platforms","categories","countries","products","bundles"].forEach(function(k){if(c[k]==null)c[k]=clone(d[k]);});
+  for(var k in d.settings){if(c.settings[k]==null)c.settings[k]=d.settings[k];}
+  c.products.forEach(function(p){if(!p.roomSizes)p.roomSizes=[];});
+  c.bundles.forEach(function(b){if(!b.items)b.items=[];if(!b.includes)b.includes=[];});
+  return c;
+}
+
+/* Product image with automatic fallback to the category icon if the link fails */
+function imgTag(i){
+  var icon=cat(i.category).icon;
+  if(!i.imageUrl)return icon;
+  return '<img src="'+esc(i.imageUrl)+'" alt="'+esc(i.name)+'" loading="lazy" referrerpolicy="no-referrer" data-fallback="'+esc(icon)+'">';
+}
+
+/* =====================================================================
+   4. LOOKUPS & PRICING
+   ===================================================================== */
+function country(){return cfg.countries.filter(function(c){return c.code===basket.country;})[0]||cfg.countries[0]||{labourRate:0,shippingMult:1,hardwareUpliftPct:0,minLabour:0,name:"-",currency:cfg.settings.baseCurrency};}
+function currency(){return cfg.currencies.filter(function(c){return c.code===basket.currency;})[0]||cfg.currencies[0];}
+function product(id){return cfg.products.filter(function(p){return p.id===id;})[0];}
+function bundle(id){return cfg.bundles.filter(function(b){return b.id===id;})[0];}
+function cat(id){return cfg.categories.filter(function(c){return c.id===id;})[0]||{name:id,icon:"📦"};}
+function roomSizeName(id){var r=cfg.roomSizes.filter(function(x){return x.id===id;})[0];return r?r.name:id;}
+function fmt(base){var c=currency();var v=Math.round(base*(c.rate||1));return (c.symbol||"")+v.toLocaleString("en-GB");}
+
+/* Returns normalised info for any catalogue entry (product or bundle) in BASE currency, BEFORE regional uplift */
+function info(type,id){
+  if(type==="bundle"){
+    var b=bundle(id);if(!b)return null;
+    var itemsPrice=0,itemsShip=0,itemsHrs=0,warrBase=0;
+    b.items.forEach(function(it){var p=product(it.productId);if(!p)return;var q=num(it.qty,1);itemsPrice+=p.price*q;itemsShip+=num(p.shipping)*q;itemsHrs+=num(p.labourHours)*q;if(p.warranty)warrBase+=p.price*q;});
+    var price=num(b.price)>0?num(b.price):itemsPrice;
+    return {type:"bundle",id:b.id,name:b.name,brand:b.brand,sku:"BUNDLE-"+b.id.toUpperCase(),category:"bundles",platform:b.platform,roomSizes:[b.roomSize],
+            price:price,shipping:num(b.shipping)+(num(b.price)>0?0:itemsShip),labourHours:num(b.labourHours)+(num(b.price)>0?0:itemsHrs),
+            warrantyBase:num(b.price)>0?price:warrBase,description:b.description,imageUrl:b.imageUrl,badge:b.badge,sample:!!b.sample,active:b.active!==false,includes:b.includes,items:b.items};
+  }
+  var p=product(id);if(!p)return null;
+  return {type:"product",id:p.id,name:p.name,brand:p.brand,sku:p.sku,category:p.category,platform:p.platform,roomSizes:p.roomSizes,price:num(p.price),shipping:num(p.shipping),
+          labourHours:num(p.labourHours),warrantyBase:p.warranty?num(p.price):0,description:p.description,imageUrl:p.imageUrl,badge:"",sample:!!p.sample,active:p.active!==false};
+}
+function uplift(){return 1+num(country().hardwareUpliftPct)/100;}
+function displayPrice(i){return i.price*uplift();}
+
+/* Full estimate calculation – every figure shown to users comes from here */
+function calc(){
+  var c=country(),s=cfg.settings,u=uplift();
+  var out={rooms:[],hardware:0,shipping:0,hours:0,warrantyBase:0,lineCount:0};
+  basket.rooms.forEach(function(r){
+    var rq=Math.max(1,Math.round(num(r.qty,1)));
+    var room={id:r.id,name:r.name,qty:rq,lines:[],hardware:0,hours:0,shipping:0};
+    r.items.forEach(function(it,idx){
+      var i=info(it.type,it.refId);if(!i)return;
+      var q=Math.max(1,Math.round(num(it.qty,1)));
+      var unit=i.price*u;
+      var line={idx:idx,name:i.name,brand:i.brand,sku:i.sku,type:it.type,qty:q,unit:unit,total:unit*q,hours:i.labourHours*q,shipping:i.shipping*c.shippingMult*q,warrantyBase:i.warrantyBase*u*q,includes:i.includes||[]};
+      room.lines.push(line);room.hardware+=line.total;room.hours+=line.hours;room.shipping+=line.shipping;
+      out.warrantyBase+=line.warrantyBase*rq;out.lineCount+=q*rq;
+    });
+    out.hardware+=room.hardware*rq;out.hours+=room.hours*rq;out.shipping+=room.shipping*rq;
+    out.rooms.push(room);
+  });
+  var labourRaw=out.hours*num(c.labourRate);
+  out.labour=out.hours>0?Math.max(labourRaw,num(c.minLabour)):0;
+  out.minApplied=out.hours>0&&labourRaw<num(c.minLabour);
+  out.warrantyYears=wYears();
+  out.warranty=out.warrantyBase*num(s.warrantyPct)/100*out.warrantyYears;
+  out.pm=(out.hardware+out.labour)*num(s.projectMgmtPct)/100;
+  var sub=out.hardware+out.labour+out.shipping+out.warranty+out.pm;
+  out.contingency=sub*num(s.contingencyPct)/100;
+  out.total=sub+out.contingency;
+  out.country=c;out.currency=currency();
+  return out;
+}
+
+/* =====================================================================
+   5. STOREFRONT RENDERING
+   ===================================================================== */
+function applyBranding(){
+  document.documentElement.style.setProperty("--brand",cfg.settings.brandColor||"#0078d4");
+  $("appTitle").textContent=cfg.settings.appTitle;$("appSub").textContent=cfg.settings.appSubtitle;document.title=cfg.settings.appTitle;
+  $("optWarrantyLbl").textContent="Extended warranty ("+cfg.settings.warrantyPct+"% of equipment cost per year):";
+  $("disclaimerSmall").textContent="⚠️ "+cfg.settings.disclaimer;
+}
+function renderSelectors(){
+  var cs=$("countrySelect");cs.innerHTML="";
+  var regions={};cfg.countries.forEach(function(c){(regions[c.region]=regions[c.region]||[]).push(c);});
+  Object.keys(regions).forEach(function(rg){var og=document.createElement("optgroup");og.label=rg;regions[rg].forEach(function(c){var o=document.createElement("option");o.value=c.code;o.textContent=c.name;og.appendChild(o);});cs.appendChild(og);});
+  if(!cfg.countries.some(function(c){return c.code===basket.country;}))basket.country=(cfg.countries[0]||{}).code;
+  cs.value=basket.country;
+  var cu=$("currencySelect");cu.innerHTML=cfg.currencies.map(function(c){return '<option value="'+esc(c.code)+'">'+esc(c.symbol+" "+c.code)+'</option>';}).join("");
+  if(!cfg.currencies.some(function(c){return c.code===basket.currency;}))basket.currency=country().currency||cfg.settings.baseCurrency;
+  cu.value=basket.currency;
+  $("catBar").innerHTML='<button data-cat="all">All equipment</button>'+cfg.categories.map(function(c){return '<button data-cat="'+esc(c.id)+'">'+c.icon+" "+esc(c.name)+'</button>';}).join("");
+  $("fRoom").innerHTML='<option value="">Any size</option>'+cfg.roomSizes.map(function(r){return '<option value="'+esc(r.id)+'">'+esc(r.name)+'</option>';}).join("");
+  $("fPlatform").innerHTML='<option value="">Any platform</option>'+cfg.platforms.map(function(p){return '<option>'+esc(p)+'</option>';}).join("");
+  $("fRoom").value=ui.room;$("fPlatform").value=ui.platform;
+}
+function allItems(){
+  var list=[];
+  cfg.bundles.forEach(function(b){var i=info("bundle",b.id);if(i&&i.active)list.push(i);});
+  cfg.products.forEach(function(p){var i=info("product",p.id);if(i&&i.active)list.push(i);});
+  return list;
+}
+function renderBrands(items){
+  var brands={};items.forEach(function(i){brands[i.brand]=(brands[i.brand]||0)+1;});
+  $("fBrands").innerHTML=Object.keys(brands).sort().map(function(b){return '<label><input type="checkbox" data-brand="'+esc(b)+'" '+(ui.brands[b]?"checked":"")+'> '+esc(b)+' <span class="note">('+brands[b]+')</span></label>';}).join("");
+}
+function renderGrid(){
+  document.querySelectorAll("#catBar button").forEach(function(b){b.classList.toggle("active",b.getAttribute("data-cat")===ui.cat);});
+  var items=allItems().filter(function(i){return ui.cat==="all"||i.category===ui.cat;});
+  renderBrands(items);
+  var q=ui.q.toLowerCase(),anyBrand=Object.keys(ui.brands).some(function(k){return ui.brands[k];});
+  items=items.filter(function(i){
+    if(q&&(i.name+" "+i.brand+" "+i.sku+" "+(i.description||"")).toLowerCase().indexOf(q)<0)return false;
+    if(ui.room&&i.roomSizes.length&&i.roomSizes.indexOf(ui.room)<0)return false;
+    if(ui.platform&&i.platform!==ui.platform)return false;
+    if(anyBrand&&!ui.brands[i.brand])return false;
+    return true;
+  });
+  if(ui.sort==="lo")items.sort(function(a,b){return a.price-b.price;});
+  if(ui.sort==="hi")items.sort(function(a,b){return b.price-a.price;});
+  if(ui.sort==="az")items.sort(function(a,b){return a.name.localeCompare(b.name);});
+  $("hero").classList.toggle("hidden",ui.cat!=="all"||!!q);
+  $("resultCount").textContent=items.length+" item"+(items.length===1?"":"s")+(ui.cat!=="all"?" in "+cat(ui.cat).name:"");
+  if(!items.length){$("grid").innerHTML='<div class="empty" style="grid-column:1/-1">No items match your filters.</div>';return;}
+  var c=country();
+  $("grid").innerHTML=items.map(function(i){
+    var pl=i.platform&&i.platform!=="N/A"?'<span class="pill '+esc(i.platform.toLowerCase())+'">'+esc(i.platform)+'</span>':"";
+    var rs=i.roomSizes.slice(0,2).map(function(r){return '<span class="pill">'+esc(roomSizeName(r).split(" (")[0])+'</span>';}).join("");
+    var lab=i.labourHours>0?"+ approx. "+i.labourHours+" h install ("+fmt(i.labourHours*c.labourRate)+")":"No install labour";
+    return '<div class="card"><div class="card-img" data-detail="'+i.type+':'+esc(i.id)+'">'+imgTag(i)+(i.badge?'<span class="badge">'+esc(i.badge)+'</span>':"")+(i.sample?'<span class="badge sample">Sample price</span>':"")+'</div>'+
+      '<div class="card-body"><div class="card-brand">'+esc(i.brand)+' · '+esc(i.sku)+'</div><div class="card-name" data-detail="'+i.type+':'+esc(i.id)+'">'+esc(i.name)+'</div>'+
+      '<div class="pills">'+pl+rs+'</div><div class="price">'+(i.price>0?fmt(displayPrice(i)):"Labour only")+'<small>'+lab+'</small></div>'+
+      '<div class="card-actions"><input class="qty-mini" type="number" min="1" value="1" id="q_'+i.type+'_'+esc(i.id)+'"><button class="btn btn-primary" data-add="'+i.type+':'+esc(i.id)+'">Add to estimate</button></div></div></div>';
+  }).join("");
+}
+function showDetail(type,id){
+  var i=info(type,id);if(!i)return;var c=country();
+  $("dTitle").textContent=i.name;
+  var inc="";
+  if(i.includes&&i.includes.length)inc+='<div class="section-title">What\'s included</div><ul>'+i.includes.map(function(x){return "<li>"+esc(x)+"</li>";}).join("")+'</ul>';
+  if(i.items&&i.items.length)inc+='<div class="section-title">Catalogue items in this bundle</div><ul>'+i.items.map(function(it){var p=product(it.productId);return p?"<li>"+esc(it.qty+"× "+p.name)+"</li>":"";}).join("")+'</ul>';
+  var fbt="";
+  if(type==="bundle"){
+    var rel=cfg.products.filter(function(p){return p.active!==false&&(p.category==="displays"||p.category==="mounts"||p.category==="cabling")&&p.roomSizes.indexOf(i.roomSizes[0])>=0;});
+    if(rel.length)fbt='<div class="fbt"><strong>Frequently added with this bundle</strong>'+rel.map(function(p){return '<div class="fbt-row"><span>'+cat(p.category).icon+" "+esc(p.name)+'</span><span>'+fmt(p.price*uplift())+' <button class="btn btn-ghost" style="padding:4px 10px" data-add="product:'+esc(p.id)+'" data-noqty="1">+ Add</button></span></div>';}).join("")+'</div>';
+  }
+  $("dBody").innerHTML='<div class="detail"><div class="card-img">'+imgTag(i)+'</div><div>'+
+    '<div class="card-brand">'+esc(i.brand)+' · '+esc(i.sku)+'</div><p style="margin:8px 0">'+esc(i.description||"")+'</p>'+
+    '<div class="price" style="font-size:26px">'+(i.price>0?fmt(displayPrice(i)):"Labour only")+'</div>'+
+    '<p class="note">Estimated install: '+i.labourHours+' h × '+fmt(c.labourRate)+'/h in '+esc(c.name)+' = '+fmt(i.labourHours*c.labourRate)+'<br>Estimated shipping: '+fmt(i.shipping*c.shippingMult)+(i.sample?'<br><b style="color:var(--warn)">Sample price – to be confirmed by the AV team.</b>':"")+'<br><i>Image for illustration only.</i></p>'+
+    '<div class="card-actions" style="max-width:320px;margin-top:12px"><input class="qty-mini" type="number" min="1" value="1" id="q_d_'+esc(i.id)+'"><button class="btn btn-primary" data-add="'+type+':'+esc(i.id)+'" data-qfrom="q_d_'+esc(i.id)+'">Add to estimate</button></div>'+inc+'</div></div>'+fbt;
+  $("detailModal").classList.add("open");
+}
+
+/* =====================================================================
+   6. BASKET
+   ===================================================================== */
+function activeRoom(){return basket.rooms.filter(function(r){return r.id===basket.activeRoom;})[0]||basket.rooms[0];}
+function addToBasket(type,id,qty){
+  var r=activeRoom();var ex=r.items.filter(function(x){return x.type===type&&x.refId===id;})[0];
+  if(ex)ex.qty=num(ex.qty,1)+qty;else r.items.push({type:type,refId:id,qty:qty});
+  saveBasket();renderBasket();var i=info(type,id);toast("Added "+qty+"× "+(i?i.name:"item")+" to "+r.name);
+}
+function addRoom(){var n=basket.rooms.length+1;var r={id:uid("r"),name:"Room "+n,qty:1,items:[]};basket.rooms.push(r);basket.activeRoom=r.id;saveBasket();renderBasket();return r;}
+function renderRoomPicker(){
+  $("activeRoomSelect").innerHTML=basket.rooms.map(function(r){return '<option value="'+r.id+'">'+esc(r.name)+(r.qty>1?" (×"+r.qty+")":"")+'</option>';}).join("");
+  $("activeRoomSelect").value=activeRoom().id;
+}
+function renderBasket(){
+  var e=calc();
+  $("basketCount").textContent=e.lineCount;$("basketTotal").textContent=fmt(e.total);
+  renderRoomPicker();
+  $("roomsWrap").innerHTML=e.rooms.map(function(room){
+    var r=basket.rooms.filter(function(x){return x.id===room.id;})[0];
+    var lines=room.lines.length?room.lines.map(function(l){
+      return '<div class="line"><div class="nm">'+esc(l.name)+'<small>'+esc(l.sku)+' · '+fmt(l.unit)+' each · '+l.hours+' h install</small></div>'+
+        '<input type="number" min="1" value="'+l.qty+'" data-lq="'+room.id+':'+l.idx+'"><div class="amt">'+fmt(l.total)+'</div><button class="rm" data-lrm="'+room.id+':'+l.idx+'" title="Remove">🗑</button></div>';
+    }).join(""):'<div class="room-empty">No items yet – select this room and add items from the catalogue.</div>';
+    return '<div class="room'+(room.id===basket.activeRoom?" is-active":"")+'"><div class="room-head">'+
+      '<input class="rname" value="'+esc(r.name)+'" data-rname="'+room.id+'"><small>Qty of this room</small><input class="rqty" type="number" min="1" value="'+room.qty+'" data-rqty="'+room.id+'">'+
+      '<button class="btn btn-ghost" style="padding:4px 8px" data-ract="'+room.id+'">'+(room.id===basket.activeRoom?"✓ Active":"Select")+'</button>'+
+      '<button class="btn btn-ghost" style="padding:4px 8px" data-rdup="'+room.id+'" title="Duplicate">⧉</button>'+
+      (basket.rooms.length>1?'<button class="rm" style="background:none;border:none;color:var(--danger)" data-rdel="'+room.id+'" title="Delete room">✕</button>':"")+
+      '</div>'+lines+(room.lines.length?'<div class="line" style="background:#fafafa"><div class="nm"><b>Room hardware'+(room.qty>1?" (per room)":"")+'</b></div><div></div><div class="amt">'+fmt(room.hardware)+'</div><div></div></div>':"")+'</div>';
+  }).join("");
+  var c=e.country,s=cfg.settings;
+  var rows=[
+    ["Hardware &amp; equipment",e.hardware,c.hardwareUpliftPct?"incl. "+c.hardwareUpliftPct+"% regional uplift":""],
+    ["Installation labour",e.labour,(Math.round(e.hours*10)/10)+" h × "+fmt(c.labourRate)+"/h ("+esc(c.name)+")"+(e.minApplied?" – minimum charge applied":"")],
+    ["Shipping",e.shipping,c.shippingMult!==1?"×"+c.shippingMult+" regional factor":""]
+  ];
+  if(e.warrantyYears)rows.push(["Extended warranty ("+e.warrantyYears+" yr)",e.warranty,s.warrantyPct+"% of equipment cost × "+e.warrantyYears+" yr"]);
+  if(num(s.projectMgmtPct))rows.push(["Project management",e.pm,s.projectMgmtPct+"% of hardware + labour"]);
+  if(num(s.contingencyPct))rows.push(["Contingency",e.contingency,s.contingencyPct+"%"]);
+  $("summary").innerHTML=rows.map(function(r){return '<div class="row"><span>'+r[0]+(r[2]?'<br><small>'+r[2]+'</small>':"")+'</span><span>'+fmt(r[1])+'</span></div>';}).join("")+
+    '<div class="row total"><span>Estimated total</span><span>'+fmt(e.total)+'</span></div><div class="note">Shown in '+esc(e.currency.code)+'. Excludes VAT / sales tax.</div>';
+  $("optWarranty").value=String(wYears());
+  var p=basket.project||{};$("pName").value=p.name||"";$("pSite").value=p.site||"";$("pBy").value=p.by||"";$("pEmail").value=p.email||"";$("pNotes").value=p.notes||"";
+}
+function openDrawer(){$("drawer").classList.add("open");$("overlay").classList.add("open");}
+function closeDrawer(){$("drawer").classList.remove("open");$("overlay").classList.remove("open");}
+
+/* =====================================================================
+   7. EXPORTS – PDF (print), CSV, quote request email
+   ===================================================================== */
+function estRef(){var d=new Date();return "AVE-"+d.toISOString().slice(0,10).replace(/-/g,"")+"-"+Math.random().toString(36).slice(2,6).toUpperCase();}
+function hasItems(){return basket.rooms.some(function(r){return r.items.length;});}
+function exportPdf(){
+  if(!hasItems()){toast("Add at least one item first");return;}
+  var e=calc(),s=cfg.settings,c=e.country,p=basket.project||{},ref=estRef();
+  var h='<div class="phead"><div><h1>'+esc(s.appTitle)+' – Budget Estimate</h1><div>'+esc(s.appSubtitle)+'</div></div><div style="text-align:right"><b>'+ref+'</b><br>'+new Date().toLocaleDateString("en-GB")+'</div></div>';
+  h+='<table class="meta"><tr><td><b>Project:</b> '+esc(p.name||"-")+'</td><td><b>Site:</b> '+esc(p.site||"-")+'</td></tr><tr><td><b>Requested by:</b> '+esc(p.by||"-")+' '+esc(p.email||"")+'</td><td><b>Country:</b> '+esc(c.name)+' ('+esc(c.region)+') · <b>Currency:</b> '+esc(e.currency.code)+'</td></tr></table>';
+  e.rooms.forEach(function(r){
+    if(!r.lines.length)return;
+    h+='<div class="room-block"><h3>'+esc(r.name)+(r.qty>1?" × "+r.qty+" rooms":"")+'</h3><table><tr><th>Item</th><th>SKU</th><th class="r">Qty</th><th class="r">Unit</th><th class="r">Total</th><th class="r">Install hrs</th></tr>';
+    r.lines.forEach(function(l){h+='<tr><td>'+esc(l.name)+(l.includes.length?'<br><span style="color:#666;font-size:9px">Includes: '+esc(l.includes.join(", "))+'</span>':"")+'</td><td>'+esc(l.sku)+'</td><td class="r">'+l.qty+'</td><td class="r">'+fmt(l.unit)+'</td><td class="r">'+fmt(l.total)+'</td><td class="r">'+l.hours+'</td></tr>';});
+    h+='<tr class="tot"><td colspan="4">Hardware per room</td><td class="r">'+fmt(r.hardware)+'</td><td class="r">'+r.hours+'</td></tr></table></div>';
+  });
+  h+='<h3>Estimate summary</h3><table><tr><th>Cost element</th><th>Basis</th><th class="r">Amount</th></tr>';
+  h+='<tr><td>Hardware &amp; equipment</td><td>'+(c.hardwareUpliftPct?"Includes "+c.hardwareUpliftPct+"% regional uplift":"Catalogue prices")+'</td><td class="r">'+fmt(e.hardware)+'</td></tr>';
+  h+='<tr><td>Installation labour</td><td>'+(Math.round(e.hours*10)/10)+' h × '+fmt(c.labourRate)+'/h'+(e.minApplied?" (minimum charge)":"")+'</td><td class="r">'+fmt(e.labour)+'</td></tr>';
+  h+='<tr><td>Shipping</td><td>Regional factor ×'+c.shippingMult+'</td><td class="r">'+fmt(e.shipping)+'</td></tr>';
+    if(e.warrantyYears)h+='<tr><td>Extended warranty ('+e.warrantyYears+' yr)</td><td>'+s.warrantyPct+'% of equipment cost per year × '+e.warrantyYears+'</td><td class="r">'+fmt(e.warranty)+'</td></tr>';
+  if(num(s.projectMgmtPct))h+='<tr><td>Project management</td><td>'+s.projectMgmtPct+'%</td><td class="r">'+fmt(e.pm)+'</td></tr>';
+  if(num(s.contingencyPct))h+='<tr><td>Contingency</td><td>'+s.contingencyPct+'%</td><td class="r">'+fmt(e.contingency)+'</td></tr>';
+  h+='<tr class="tot"><td colspan="2">ESTIMATED TOTAL ('+esc(e.currency.code)+', excl. tax)</td><td class="r">'+fmt(e.total)+'</td></tr></table>';
+  if(p.notes)h+='<h3>Notes</h3><p>'+esc(p.notes)+'</p>';
+  h+='<div class="disc"><b>Disclaimer:</b> '+esc(s.disclaimer)+'<br><b>Next step:</b> If you wish to proceed, request an official quotation from the approved AV vendor for your region, quoting reference '+ref+'.</div>';
+  $("printArea").innerHTML=h;
+  var old=document.title;document.title="AV_Estimate_"+(p.name||c.code).replace(/[^\w-]+/g,"_")+"_"+ref;
+  setTimeout(function(){window.print();document.title=old;},100);
+}
+function exportCsv(){
+  if(!hasItems()){toast("Add at least one item first");return;}
+  var e=calc(),rows=[["Room","Room qty","Item","SKU","Qty","Unit ("+e.currency.code+")","Line total","Install hrs"]];
+  var cv=function(v){return Math.round(v*(e.currency.rate||1));};
+  e.rooms.forEach(function(r){r.lines.forEach(function(l){rows.push([r.name,r.qty,l.name,l.sku,l.qty,cv(l.unit),cv(l.total),l.hours]);});});
+  rows.push([]);rows.push(["Hardware","","","","","",cv(e.hardware)]);rows.push(["Labour","","","","","",cv(e.labour),e.hours]);rows.push(["Shipping","","","","","",cv(e.shipping)]);
+  rows.push(["Warranty","","","","","",cv(e.warranty)]);rows.push(["Project mgmt","","","","","",cv(e.pm)]);rows.push(["Contingency","","","","","",cv(e.contingency)]);rows.push(["TOTAL","","","","","",cv(e.total)]);
+  var csv=rows.map(function(r){return r.map(function(v){v=String(v==null?"":v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}).join(",");}).join("\r\n");
+  download("AV_Estimate_"+new Date().toISOString().slice(0,10)+".csv",csv,"text/csv");
+}
+function requestQuote(){
+  if(!hasItems()){toast("Add at least one item first");return;}
+  var e=calc(),c=e.country,s=cfg.settings,p=basket.project||{};
+  var b="Hello"+(c.vendorName?" "+c.vendorName:"")+",\n\nPlease provide an official quotation for the following AV requirement.\n\n";
+  b+="Project: "+(p.name||"-")+"\nSite: "+(p.site||"-")+"\nCountry: "+c.name+"\nRequested by: "+(p.by||"-")+" "+(p.email||"")+"\n\n";
+  e.rooms.forEach(function(r){if(!r.lines.length)return;b+=r.name+(r.qty>1?" (x"+r.qty+" rooms)":"")+"\n";r.lines.forEach(function(l){b+="  - "+l.qty+" x "+l.name+" ("+l.sku+")\n";});b+="\n";});
+  b+="Internal budget estimate: "+fmt(e.total)+" ("+e.currency.code+", excl. tax)\n";
+  if(p.notes)b+="\nNotes: "+p.notes+"\n";
+  b+="\nThe PDF estimate is attached for reference.\n\nKind regards";
+  if(b.length>1800)b=b.slice(0,1750)+"\n…(see attached PDF for the full list)";
+  var to=c.vendorEmail||"";var cc=s.teamEmail?"&cc="+encodeURIComponent(s.teamEmail):"";
+  if(!to)toast("No vendor email set for "+c.name+" – add one in Admin > Countries");
+  window.location.href="mailto:"+encodeURIComponent(to)+"?subject="+encodeURIComponent(s.quoteSubject+" – "+(p.name||c.name))+cc+"&body="+encodeURIComponent(b);
+}
+function download(name,text,type){var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type:type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);}
+
+/* =====================================================================
+   8. ADMIN
+   ===================================================================== */
+var TABS=[["products","Products"],["bundles","Bundles"],["countries","Countries & labour"],["currencies","Currencies"],["lists","Categories & room sizes"],["settings","Settings"],["io","Import / Export"]];
+function openAdmin(){draft=clone(cfg);adminTab="products";renderAdmin();$("adminModal").classList.add("open");$("adminStatus").textContent="";}
+function closeAdmin(){$("adminModal").classList.remove("open");draft=null;}
+function opts(list,val,valKey,lblKey){return list.map(function(x){var v=valKey?x[valKey]:x,l=lblKey?x[lblKey]:x;return '<option value="'+esc(v)+'"'+(v===val?" selected":"")+'>'+esc(l)+'</option>';}).join("");}
+function inp(path,val,type,extra){return '<input type="'+(type||"text")+'" data-path="'+path+'" value="'+esc(val)+'" '+(extra||"")+'>';}
+function chk(path,val){return '<input type="checkbox" data-path="'+path+'" '+(val?"checked":"")+'>';}
+function renderAdmin(){
+  $("adminTabs").innerHTML=TABS.map(function(t){return '<button data-tab="'+t[0]+'" class="'+(adminTab===t[0]?"active":"")+'">'+t[1]+'</button>';}).join("");
+  var h="",d=draft;
+  var hasLocal=!!localStorage.getItem(STORAGE_KEY);
+  if(hasLocal)h+='<div class="banner">You are viewing <b>local changes saved in this browser only</b>. Other users will not see them until you publish (Import / Export tab).</div>';
+  var base=d.settings.baseCurrency;
+  if(adminTab==="products"){
+    h+='<div class="toolbar"><button class="btn btn-blue" data-act="addProduct">+ Add product</button><input id="admFilter" placeholder="Filter products…" value="'+esc(ui.admFilter||"")+'"><span class="note">All prices in '+esc(base)+'. Room sizes: comma-separated IDs ('+d.roomSizes.map(function(r){return r.id;}).join(", ")+').</span></div>';
+    h+='<div style="overflow:auto"><table class="tbl"><tr><th>Active</th><th>Sample</th><th>SKU</th><th>Name</th><th>Brand</th><th>Category</th><th>Platform</th><th>Room sizes</th><th>Price</th><th>Shipping</th><th>Install hrs</th><th>Warranty</th><th>Image URL</th><th>Description</th><th></th></tr>';
+    var f=(ui.admFilter||"").toLowerCase();
+    d.products.forEach(function(p,i){
+      if(f&&(p.name+" "+p.brand+" "+p.sku).toLowerCase().indexOf(f)<0)return;
+      var P="products."+i+".";
+      h+='<tr><td>'+chk(P+"active",p.active!==false)+'</td><td>'+chk(P+"sample",p.sample)+'</td><td style="min-width:110px">'+inp(P+"sku",p.sku)+'</td><td style="min-width:180px">'+inp(P+"name",p.name)+'</td><td style="min-width:90px">'+inp(P+"brand",p.brand)+'</td>'+
+        '<td><select data-path="'+P+'category">'+opts(d.categories.filter(function(c){return c.id!=="bundles";}),p.category,"id","name")+'</select></td>'+
+        '<td><select data-path="'+P+'platform">'+opts(d.platforms,p.platform)+'</select></td>'+
+        '<td style="min-width:120px">'+inp(P+"roomSizes",p.roomSizes.join(", "),"text",'data-kind="list"')+'</td>'+
+        '<td>'+inp(P+"price",p.price,"number",'min="0" step="1"')+'</td><td>'+inp(P+"shipping",p.shipping,"number",'min="0"')+'</td><td>'+inp(P+"labourHours",p.labourHours,"number",'min="0" step="0.5"')+'</td>'+
+        '<td>'+chk(P+"warranty",p.warranty)+'</td><td style="min-width:140px">'+inp(P+"imageUrl",p.imageUrl)+'</td><td style="min-width:200px"><textarea data-path="'+P+'description" rows="1">'+esc(p.description)+'</textarea></td>'+
+        '<td><button class="del" data-del="products:'+i+'">×</button></td></tr>';
+    });
+    h+='</table></div>';
+  }
+  if(adminTab==="bundles"){
+    h+='<div class="banner info">Set a <b>fixed bundle price</b> (as in your existing estimator), or leave it at 0 and link catalogue items so the price is calculated automatically.</div>';
+    h+='<div class="toolbar"><button class="btn btn-blue" data-act="addBundle">+ Add bundle</button></div>';
+    d.bundles.forEach(function(b,i){
+      var B="bundles."+i+".";
+      var calcPrice=0;b.items.forEach(function(it){var p=d.products.filter(function(x){return x.id===it.productId;})[0];if(p)calcPrice+=p.price*num(it.qty,1);});
+      h+='<div class="admin-card"><div class="grid-3">'+
+        '<div class="fld"><label>Name</label>'+inp(B+"name",b.name)+'</div><div class="fld"><label>Brand</label>'+inp(B+"brand",b.brand)+'</div>'+
+        '<div class="fld"><label>Room size</label><select data-path="'+B+'roomSize">'+opts(d.roomSizes,b.roomSize,"id","name")+'</select></div>'+
+        '<div class="fld"><label>Platform</label><select data-path="'+B+'platform">'+opts(d.platforms,b.platform)+'</select></div>'+
+        '<div class="fld"><label>Fixed price ('+esc(base)+')</label>'+inp(B+"price",b.price,"number",'min="0"')+'</div>'+
+        '<div class="fld"><label>Shipping ('+esc(base)+')</label>'+inp(B+"shipping",b.shipping,"number",'min="0"')+'</div>'+
+        '<div class="fld"><label>Install hours</label>'+inp(B+"labourHours",b.labourHours,"number",'min="0" step="0.5"')+'</div>'+
+        '<div class="fld"><label>Badge</label>'+inp(B+"badge",b.badge,"text",'placeholder="e.g. Standard"')+'</div>'+
+        '<div class="fld"><label>Image URL</label>'+inp(B+"imageUrl",b.imageUrl)+'</div>'+
+        '<div class="fld"><label>Active / Sample</label><div style="padding-top:6px">'+chk(B+"active",b.active!==false)+' Active &nbsp; '+chk(B+"sample",b.sample)+' Sample price</div></div>'+
+        '</div><div class="grid-3"><div class="fld" style="grid-column:span 2"><label>Description</label><textarea data-path="'+B+'description" rows="2">'+esc(b.description)+'</textarea></div>'+
+        '<div class="fld"><label>What\'s included (one per line)</label><textarea data-path="'+B+'includes" data-kind="lines" rows="3">'+esc(b.includes.join("\n"))+'</textarea></div></div>'+
+        '<div class="section-title" style="margin-top:4px">Linked catalogue items '+(b.items.length?'<span class="note">(calculated price '+base+' '+calcPrice.toLocaleString("en-GB")+')</span>':"")+'</div>'+
+        b.items.map(function(it,j){return '<div class="toolbar"><select data-path="'+B+'items.'+j+'.productId" style="min-width:260px">'+opts(d.products,it.productId,"id","name")+'</select>'+inp(B+"items."+j+".qty",it.qty,"number",'min="1" style="width:70px"')+'<button class="del" data-del="'+B+'items:'+j+'" style="background:#fee2e2;border:none;color:#c42b1c;border-radius:4px;width:26px;height:26px">×</button></div>';}).join("")+
+        '<div class="toolbar"><button class="btn btn-ghost" data-act="addBundleItem" data-i="'+i+'">+ Link catalogue item</button><button class="btn btn-danger" data-del="bundles:'+i+'" style="margin-left:auto">Delete bundle</button></div></div>';
+    });
+  }
+  if(adminTab==="countries"){
+    h+='<div class="banner info">Labour rate is per hour in '+esc(base)+'. Shipping factor multiplies each item\'s shipping cost. Hardware uplift adds a % to equipment prices (e.g. import duty). Vendor email is used by “Request official quote”.</div>';
+    h+='<div class="toolbar"><button class="btn btn-blue" data-act="addCountry">+ Add country</button></div><div style="overflow:auto"><table class="tbl"><tr><th>Code</th><th>Country</th><th>Region</th><th>Default currency</th><th>Labour rate /h</th><th>Min labour charge</th><th>Shipping factor</th><th>Hardware uplift %</th><th>Vendor name</th><th>Vendor quote email</th><th></th></tr>';
+    d.countries.forEach(function(c,i){var C="countries."+i+".";
+      h+='<tr><td style="width:60px">'+inp(C+"code",c.code)+'</td><td style="min-width:140px">'+inp(C+"name",c.name)+'</td><td style="min-width:120px">'+inp(C+"region",c.region)+'</td><td><select data-path="'+C+'currency">'+opts(d.currencies,c.currency,"code","code")+'</select></td>'+
+        '<td>'+inp(C+"labourRate",c.labourRate,"number",'min="0"')+'</td><td>'+inp(C+"minLabour",c.minLabour,"number",'min="0"')+'</td><td>'+inp(C+"shippingMult",c.shippingMult,"number",'min="0" step="0.05"')+'</td><td>'+inp(C+"hardwareUpliftPct",c.hardwareUpliftPct,"number",'step="0.5"')+'</td>'+
+        '<td>'+inp(C+"vendorName",c.vendorName)+'</td><td>'+inp(C+"vendorEmail",c.vendorEmail,"email")+'</td><td><button class="del" data-del="countries:'+i+'">×</button></td></tr>';});
+    h+='</table></div>';
+  }
+  if(adminTab==="currencies"){
+    h+='<div class="banner info">Rates convert from the base currency ('+esc(base)+' = 1). Update these periodically.</div><div class="toolbar"><button class="btn btn-blue" data-act="addCurrency">+ Add currency</button></div><table class="tbl" style="max-width:520px"><tr><th>Code</th><th>Symbol</th><th>Rate vs '+esc(base)+'</th><th></th></tr>';
+    d.currencies.forEach(function(c,i){var C="currencies."+i+".";h+='<tr><td>'+inp(C+"code",c.code)+'</td><td>'+inp(C+"symbol",c.symbol)+'</td><td>'+inp(C+"rate",c.rate,"number",'step="0.0001" min="0"')+'</td><td><button class="del" data-del="currencies:'+i+'">×</button></td></tr>';});
+    h+='</table>';
+  }
+  if(adminTab==="lists"){
+    h+='<div class="section-title">Categories</div><div class="toolbar"><button class="btn btn-ghost" data-act="addCategory">+ Add category</button><span class="note">Keep the “bundles” ID – it drives the bundles section.</span></div><table class="tbl" style="max-width:620px"><tr><th>ID</th><th>Name</th><th>Icon (emoji)</th><th></th></tr>';
+    d.categories.forEach(function(c,i){var C="categories."+i+".";h+='<tr><td>'+inp(C+"id",c.id,"text",c.id==="bundles"?"readonly":"")+'</td><td>'+inp(C+"name",c.name)+'</td><td style="width:90px">'+inp(C+"icon",c.icon)+'</td><td>'+(c.id==="bundles"?"":'<button class="del" data-del="categories:'+i+'">×</button>')+'</td></tr>';});
+    h+='</table><div class="section-title">Room sizes</div><div class="toolbar"><button class="btn btn-ghost" data-act="addRoomSize">+ Add room size</button></div><table class="tbl" style="max-width:620px"><tr><th>ID</th><th>Name</th><th></th></tr>';
+    d.roomSizes.forEach(function(r,i){var R="roomSizes."+i+".";h+='<tr><td>'+inp(R+"id",r.id)+'</td><td>'+inp(R+"name",r.name)+'</td><td><button class="del" data-del="roomSizes:'+i+'">×</button></td></tr>';});
+    h+='</table><div class="section-title">Platforms (comma-separated)</div>'+'<input style="width:100%;max-width:620px;padding:7px;border:1px solid var(--line);border-radius:5px" data-path="platforms" data-kind="list" value="'+esc(d.platforms.join(", "))+'">';
+  }
+  if(adminTab==="settings"){
+    var S="settings.";
+    h+='<div class="admin-card"><div class="grid-3">'+
+      '<div class="fld"><label>App title</label>'+inp(S+"appTitle",d.settings.appTitle)+'</div><div class="fld"><label>Subtitle</label>'+inp(S+"appSubtitle",d.settings.appSubtitle)+'</div>'+
+      '<div class="fld"><label>Brand colour</label>'+inp(S+"brandColor",d.settings.brandColor,"color")+'</div>'+
+      '<div class="fld"><label>Base currency (prices entered in)</label><select data-path="'+S+'baseCurrency">'+opts(d.currencies,d.settings.baseCurrency,"code","code")+'</select></div>'+
+      '<div class="fld"><label>Warranty % per year (of equipment cost)</label>'+inp(S+"warrantyPct",d.settings.warrantyPct,"number",'step="0.5"')+'</div>'+
+      '<div class="fld"><label>Project management %</label>'+inp(S+"projectMgmtPct",d.settings.projectMgmtPct,"number",'step="0.5"')+'</div><div class="fld"><label>Contingency %</label>'+inp(S+"contingencyPct",d.settings.contingencyPct,"number",'step="0.5"')+'</div>'+
+      '<div class="fld"><label>AV team email (CC on quote requests)</label>'+inp(S+"teamEmail",d.settings.teamEmail,"email")+'</div>'+
+      '<div class="fld"><label>Quote email subject</label>'+inp(S+"quoteSubject",d.settings.quoteSubject)+'</div>'+
+      '<div class="fld"><label>Admin password</label>'+inp(S+"adminPassword",d.settings.adminPassword)+'</div></div>'+
+      '<div class="fld"><label>Disclaimer (shown on basket &amp; PDF)</label><textarea data-path="'+S+'disclaimer" rows="3">'+esc(d.settings.disclaimer)+'</textarea></div></div>'+
+      '<p class="note">⚠ The password is a simple deterrent only – anyone who can open the file can read it. Restrict who can <i>edit</i> the published file/catalogue in SharePoint for real control.</p>';
+  }
+  if(adminTab==="io"){
+    h+='<div class="admin-card"><b>Publish your changes to everyone</b><ol style="margin:8px 0 0 18px;line-height:1.8">'+
+      '<li>Click <b>Save changes</b> first, then <b>Download catalogue.json</b>.</li>'+
+      '<li><b>Option A (recommended):</b> upload catalogue.json to your SharePoint site and set <code>CONFIG_URL</code> at the top of the script. Everyone gets updates instantly.</li>'+
+      '<li><b>Option B:</b> open this HTML in Visual Studio Code and replace the <code>DEFAULT_CONFIG = {…};</code> block with the downloaded JSON, then re-upload the HTML.</li>'+
+      '<li>Click <b>Discard local changes</b> to check what normal users will see.</li></ol>'+
+      '<div class="toolbar" style="margin-top:12px"><button class="btn btn-blue" data-act="exportJson">⬇ Download catalogue.json</button>'+
+      '<label class="btn btn-ghost" style="display:inline-block">⬆ Import catalogue.json<input type="file" id="importFile" accept=".json" class="hidden"></label>'+
+      '<button class="btn btn-ghost" data-act="exportProductsCsv">⬇ Products CSV</button>'+
+      '<label class="btn btn-ghost" style="display:inline-block">⬆ Import products CSV<input type="file" id="importCsv" accept=".csv" class="hidden"></label>'+
+      '<button class="btn btn-danger" data-act="discardLocal">Discard local changes</button><button class="btn btn-danger" data-act="factory">Reset to built-in defaults</button></div>'+
+      '<p class="note">Products CSV columns: id, sku, name, brand, category, platform, roomSizes (separated by |), price, shipping, labourHours, warranty (TRUE/FALSE), sample (TRUE/FALSE), active (TRUE/FALSE), imageUrl, description. Importing a CSV updates matching IDs and adds new ones. Handy for bulk price updates from a vendor price list in Excel.</p></div>';
+  }
+  $("adminBody").innerHTML=h;
+  var af=$("admFilter");if(af){af.oninput=function(){ui.admFilter=af.value;var pos=af.selectionStart;renderAdmin();var n=$("admFilter");n.focus();n.setSelectionRange(pos,pos);};}
+  var imp=$("importFile");if(imp)imp.onchange=function(){readFile(imp.files[0],function(t){try{draft=normalise(JSON.parse(t));renderAdmin();$("adminStatus").textContent="Imported – click Save changes to apply";}catch(e){alert("Invalid JSON file: "+e.message);}});};
+  var ic=$("importCsv");if(ic)ic.onchange=function(){readFile(ic.files[0],function(t){var n=importProductsCsv(t);renderAdmin();$("adminStatus").textContent=n+" products imported/updated – click Save changes";});};
+}
+function readFile(f,cb){if(!f)return;var r=new FileReader();r.onload=function(){cb(r.result);};r.readAsText(f);}
+function setPath(obj,path,val){var ps=path.split(".");var o=obj;for(var i=0;i<ps.length-1;i++)o=o[ps[i]];o[ps[ps.length-1]]=val;}
+function getPath(obj,path){return path.split(".").reduce(function(o,k){return o==null?o:o[k];},obj);}
+function parseCsv(t){
+  var rows=[],row=[],f="",q=false;
+  for(var i=0;i<t.length;i++){var ch=t[i];
+    if(q){if(ch==='"'){if(t[i+1]==='"'){f+='"';i++;}else q=false;}else f+=ch;}
+    else if(ch==='"')q=true;else if(ch===","){row.push(f);f="";}else if(ch==="\n"||ch==="\r"){if(ch==="\r"&&t[i+1]==="\n")i++;row.push(f);rows.push(row);row=[];f="";}else f+=ch;}
+  if(f||row.length){row.push(f);rows.push(row);}
+  return rows.filter(function(r){return r.some(function(x){return x.trim();});});
+}
+var CSV_COLS=["id","sku","name","brand","category","platform","roomSizes","price","shipping","labourHours","warranty","sample","active","imageUrl","description"];
+function importProductsCsv(t){
+  var rows=parseCsv(t.replace(/^\uFEFF/,""));if(rows.length<2)return 0;
+  var hdr=rows[0].map(function(h){return h.trim();}),n=0;
+  rows.slice(1).forEach(function(r){
+    var o={};hdr.forEach(function(h,i){o[h]=(r[i]||"").trim();});
+    if(!o.name&&!o.id)return;
+    var bool=function(v,d){return v===""?d:/^(true|yes|1|y)$/i.test(v);};
+    var p={id:o.id||uid("p"),sku:o.sku||"",name:o.name||"",brand:o.brand||"",category:o.category||"video",platform:o.platform||"N/A",
+      roomSizes:(o.roomSizes||"").split(/[|;]/).map(function(s){return s.trim();}).filter(Boolean),price:num(o.price),shipping:num(o.shipping),labourHours:num(o.labourHours),
+      warranty:bool(o.warranty||"",true),sample:bool(o.sample||"",false),active:bool(o.active||"",true),imageUrl:o.imageUrl||"",description:o.description||""};
+    var ex=draft.products.findIndex(function(x){return x.id===p.id;});
+    if(ex>=0)draft.products[ex]=p;else draft.products.push(p);n++;
+  });
+  return n;
+}
+function exportProductsCsv(){
+  var rows=[CSV_COLS].concat(draft.products.map(function(p){return CSV_COLS.map(function(k){var v=p[k];if(k==="roomSizes")v=(v||[]).join("|");if(typeof v==="boolean")v=v?"TRUE":"FALSE";return v==null?"":v;});}));
+  var csv="\uFEFF"+rows.map(function(r){return r.map(function(v){v=String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}).join(",");}).join("\r\n");
+  download("av_products.csv",csv,"text/csv");
+}
+function adminAction(act,el){
+  var d=draft;
+  if(act==="addProduct"){d.products.unshift({id:uid("p"),sku:"",name:"New product",brand:"",category:(d.categories[1]||{}).id||"video",platform:"N/A",roomSizes:[],price:0,shipping:0,labourHours:0,warranty:true,sample:false,active:true,imageUrl:"",description:""});ui.admFilter="";}
+  if(act==="addBundle")d.bundles.unshift({id:uid("b"),name:"New bundle",brand:"",roomSize:(d.roomSizes[0]||{}).id,platform:"Android",price:0,shipping:0,labourHours:0,badge:"",active:true,sample:false,imageUrl:"",description:"",includes:[],items:[]});
+  if(act==="addBundleItem"){var b=d.bundles[+el.getAttribute("data-i")];if(d.products.length)b.items.push({productId:d.products[0].id,qty:1});}
+  if(act==="addCountry")d.countries.push({code:"XX",name:"New country",region:"EMEA",currency:d.settings.baseCurrency,labourRate:0,minLabour:0,shippingMult:1,hardwareUpliftPct:0,vendorName:"",vendorEmail:""});
+  if(act==="addCurrency")d.currencies.push({code:"XXX",symbol:"",rate:1});
+  if(act==="addCategory")d.categories.push({id:uid("c"),name:"New category",icon:"📦"});
+  if(act==="addRoomSize")d.roomSizes.push({id:uid("rs"),name:"New room size"});
+  if(act==="exportJson"){download("catalogue.json",JSON.stringify(cfg,null,2),"application/json");return;}
+  if(act==="exportProductsCsv"){exportProductsCsv();return;}
+  if(act==="discardLocal"){if(confirm("Remove local changes from this browser and reload the published catalogue?")){localStorage.removeItem(STORAGE_KEY);location.reload();}return;}
+  if(act==="factory"){if(confirm("Replace everything with the built-in defaults? (Click Save changes to confirm.)")){draft=clone(DEFAULT_CONFIG);}}
+  renderAdmin();
+}
+
+/* =====================================================================
+   9. EVENTS
+   ===================================================================== */
+function refreshAll(){applyBranding();renderSelectors();renderGrid();renderBasket();}
+/* Image fallback: if a product photo cannot load, show the category icon instead */
+document.addEventListener("error",function(e){var t=e.target;if(t&&t.tagName==="IMG"&&t.hasAttribute("data-fallback")){var span=document.createElement("span");span.textContent=t.getAttribute("data-fallback");t.parentNode.replaceChild(span,t);}},true);
+document.addEventListener("click",function(ev){
+  var t=ev.target.closest("[data-add],[data-detail],[data-cat],[data-goto],[data-close],[data-lrm],[data-ract],[data-rdel],[data-rdup],[data-tab],[data-act],[data-del]");
+  if(!t)return;
+  if(t.hasAttribute("data-add")){var a=t.getAttribute("data-add").split(":");var q=1;
+    if(!t.hasAttribute("data-noqty")){var qi=$(t.getAttribute("data-qfrom")||("q_"+a[0]+"_"+a[1]));if(qi)q=Math.max(1,Math.round(num(qi.value,1)));}
+    addToBasket(a[0],a[1],q);return;}
+  if(t.hasAttribute("data-detail")){var dd=t.getAttribute("data-detail").split(":");showDetail(dd[0],dd[1]);return;}
+  if(t.hasAttribute("data-cat")){ui.cat=t.getAttribute("data-cat");renderGrid();return;}
+  if(t.hasAttribute("data-goto")){ui.cat=t.getAttribute("data-goto");renderGrid();return;}
+  if(t.hasAttribute("data-close")){$(t.getAttribute("data-close")).classList.remove("open");return;}
+  if(t.hasAttribute("data-lrm")){var x=t.getAttribute("data-lrm").split(":");var r=basket.rooms.filter(function(o){return o.id===x[0];})[0];r.items.splice(+x[1],1);saveBasket();renderBasket();return;}
+  if(t.hasAttribute("data-ract")){basket.activeRoom=t.getAttribute("data-ract");saveBasket();renderBasket();closeDrawer();toast("Now adding items to "+activeRoom().name);return;}
+  if(t.hasAttribute("data-rdel")){var id=t.getAttribute("data-rdel");if(!confirm("Delete this room and its items?"))return;basket.rooms=basket.rooms.filter(function(o){return o.id!==id;});if(basket.activeRoom===id)basket.activeRoom=basket.rooms[0].id;saveBasket();renderBasket();return;}
+  if(t.hasAttribute("data-rdup")){var src=basket.rooms.filter(function(o){return o.id===t.getAttribute("data-rdup");})[0];var cp=clone(src);cp.id=uid("r");cp.name=src.name+" (copy)";basket.rooms.push(cp);saveBasket();renderBasket();return;}
+  if(t.hasAttribute("data-tab")){adminTab=t.getAttribute("data-tab");renderAdmin();return;}
+  if(t.hasAttribute("data-act")){adminAction(t.getAttribute("data-act"),t);return;}
+  if(t.hasAttribute("data-del")){var p=t.getAttribute("data-del").split(":");if(!confirm("Delete this entry?"))return;getPath(draft,p[0]).splice(+p[1],1);renderAdmin();return;}
+});
+/* Admin inline editing -> writes into the draft */
+$("adminBody").addEventListener("change",function(ev){
+  var el=ev.target,path=el.getAttribute("data-path");if(!path)return;
+  var v;
+  if(el.type==="checkbox")v=el.checked;
+  else if(el.type==="number")v=num(el.value);
+  else if(el.getAttribute("data-kind")==="list")v=el.value.split(",").map(function(s){return s.trim();}).filter(Boolean);
+  else if(el.getAttribute("data-kind")==="lines")v=el.value.split("\n").map(function(s){return s.trim();}).filter(Boolean);
+  else v=el.value;
+  setPath(draft,path,v);
+  if(/^bundles\.\d+\.items/.test(path))renderAdmin();
+});
+$("adminSave").onclick=function(){
+  document.activeElement&&document.activeElement.blur&&document.activeElement.blur();
+  setTimeout(function(){cfg=normalise(draft);draft=clone(cfg);try{localStorage.setItem(STORAGE_KEY,JSON.stringify(cfg));}catch(e){}refreshAll();renderAdmin();$("adminStatus").textContent="✓ Saved in this browser – publish via Import / Export";},30);
+};
+$("adminCancel").onclick=closeAdmin;$("adminClose").onclick=closeAdmin;
+$("adminBtn").onclick=function(){if(unlocked){openAdmin();return;}$("pwInput").value="";$("pwErr").classList.add("hidden");$("pwModal").classList.add("open");setTimeout(function(){$("pwInput").focus();},50);};
+$("pwOk").onclick=function(){if($("pwInput").value===cfg.settings.adminPassword){unlocked=true;$("pwModal").classList.remove("open");openAdmin();}else $("pwErr").classList.remove("hidden");};
+$("pwInput").onkeydown=function(e){if(e.key==="Enter")$("pwOk").click();};
+
+$("searchInput").oninput=function(){ui.q=this.value.trim();renderGrid();};
+$("searchBtn").onclick=function(){ui.q=$("searchInput").value.trim();ui.cat="all";renderGrid();};
+$("countrySelect").onchange=function(){basket.country=this.value;var c=country();if(c.currency)basket.currency=c.currency;$("currencySelect").value=basket.currency;saveBasket();renderGrid();renderBasket();};
+$("currencySelect").onchange=function(){basket.currency=this.value;saveBasket();renderGrid();renderBasket();};
+$("fRoom").onchange=function(){ui.room=this.value;renderGrid();};
+$("fPlatform").onchange=function(){ui.platform=this.value;renderGrid();};
+$("fBrands").onchange=function(e){var b=e.target.getAttribute("data-brand");if(b){ui.brands[b]=e.target.checked;renderGrid();}};
+$("clearFilters").onclick=function(){ui={cat:ui.cat,q:"",room:"",platform:"",brands:{},sort:ui.sort};$("searchInput").value="";renderSelectors();renderGrid();};
+$("sortSel").onchange=function(){ui.sort=this.value;renderGrid();};
+$("activeRoomSelect").onchange=function(){basket.activeRoom=this.value;saveBasket();renderBasket();};
+$("addRoomTop").onclick=function(){var r=addRoom();toast("Created "+r.name+" – items will be added here");};
+$("addRoomBtn").onclick=function(){addRoom();};
+$("basketBtn").onclick=openDrawer;$("closeDrawer").onclick=closeDrawer;$("overlay").onclick=closeDrawer;
+$("optWarranty").onchange=function(){basket.warranty=parseInt(this.value,10)||0;saveBasket();renderBasket();};
+$("roomsWrap").addEventListener("change",function(e){
+  var el=e.target;
+  if(el.hasAttribute("data-lq")){var x=el.getAttribute("data-lq").split(":");var r=basket.rooms.filter(function(o){return o.id===x[0];})[0];r.items[+x[1]].qty=Math.max(1,Math.round(num(el.value,1)));}
+  if(el.hasAttribute("data-rqty")){basket.rooms.filter(function(o){return o.id===el.getAttribute("data-rqty");})[0].qty=Math.max(1,Math.round(num(el.value,1)));}
+  if(el.hasAttribute("data-rname")){basket.rooms.filter(function(o){return o.id===el.getAttribute("data-rname");})[0].name=el.value||"Room";}
+  saveBasket();renderBasket();
+});
+["pName","pSite","pBy","pEmail","pNotes"].forEach(function(id){$(id).addEventListener("input",function(){basket.project=basket.project||{};basket.project[{pName:"name",pSite:"site",pBy:"by",pEmail:"email",pNotes:"notes"}[id]]=this.value;saveBasket();});});
+$("pdfBtn").onclick=exportPdf;$("csvBtn").onclick=exportCsv;$("quoteBtn").onclick=requestQuote;
+$("clearBtn").onclick=function(){if(!confirm("Clear the whole estimate?"))return;var p=basket.project;basket.rooms=[{id:uid("r"),name:"Room 1",qty:1,items:[]}];basket.activeRoom=basket.rooms[0].id;basket.project=p;saveBasket();renderBasket();};
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){closeDrawer();$("detailModal").classList.remove("open");}});
+
+/* =====================================================================
+   10. START-UP – load config then render
+   ===================================================================== */
+function start(c){cfg=normalise(c);if(!basket.country){basket.country=(cfg.countries[0]||{}).code;basket.currency=country().currency;}refreshAll();}
+var local=null;try{local=JSON.parse(localStorage.getItem(STORAGE_KEY));}catch(e){}
+if(local)start(local);
+else if(CONFIG_URL){fetch(CONFIG_URL,{cache:"no-store",credentials:"include"}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();}).then(start).catch(function(err){console.warn("Catalogue fetch failed, using embedded defaults",err);start(clone(DEFAULT_CONFIG));toast("Could not load the published catalogue – showing built-in data");});}
+else start(clone(DEFAULT_CONFIG));
+})();
+</script>
+</body>
+</html>
