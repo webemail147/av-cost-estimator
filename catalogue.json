@@ -1262,7 +1262,7 @@
       "sample": false,
       "active": false,
       "imageUrl": "https://cdn.neat.no/v3/assets/img/products-compare/picture-bar-select--2x.jpg",
-      "description": "BYOD video bar – connect a laptop and start meetings."
+      "description": "Neat Bar is a simple yet highly efficient, versatile meeting room device for small to medium-sized spaces. It provides an outstanding, hassle-free audio and video experience. You can deploy Neat Bar as a bring-your-own-device (BYOD) solution directly from your laptop, with or without our dynamic Neat Pad controller. You can also centrally control everything via our Neat Pulse cloud management platform."
     },
     {
       "id": "nt-bar2",
@@ -1282,7 +1282,7 @@
       "sample": false,
       "active": true,
       "imageUrl": "https://devicescatalogimages.teams.cdn.office.net/deviceimagesprod/61451/NeatBar2-en-us-20240612T162643-2.png_Large.png",
-      "description": "Everyday meeting room video bar with Neat Pad controller."
+      "description": "Our next-generation Neat Bar brings beautifully simple yet powerful audio and video quality to Google Meet, Microsoft Teams, or Zoom meetings. It's ideal for small to medium-sized meeting spaces, seamlessly blending in with any interior style. Neat Bar 2 also supports BYOD-only mode with or without Neat Pad, allowing you to connect your laptop and run any meeting platform via a single USB-C cable.."
     },
     {
       "id": "nt-barpro",
@@ -1322,12 +1322,12 @@
       "sample": false,
       "active": true,
       "imageUrl": "https://cdn.neat.no/ndk/1.0/assets/img/card-product/board-32--2x.jpg",
-      "description": "NEW – compact 32\" all-in-one touch video device for desks and small spaces; newly Teams certified."
+      "description": "Neat Board 32 brings exceptional video collaboration to small shared spaces and desks in an elegant, all-in-one, 32-inch touchscreen device. It's everything you need for high-quality meetings with no extra gear required. Deploy it in minutes, connect to any platform, and manage at scale."
     },
     {
       "id": "nt-board50",
       "sku": "Neat-Board-50",
-      "name": "Neat Board 50",
+      "name": "Neat Board 50 (Stand Not Included)",
       "brand": "Neat",
       "category": "bundles",
       "platform": "Android",
@@ -1342,12 +1342,12 @@
       "sample": false,
       "active": true,
       "imageUrl": "https://cdn.neat.no/ndk/1.0/assets/img/card-product-large/board-50-hover--2x.webp",
-      "description": "50\" 4K touch all-in-one video collaboration board."
+      "description": "Whether you're meeting or collaborating one-on-one, in small groups or hosting large gatherings, Neat Board 50 gives you considerable flexibility. It has an HDMI output for a dual-screen setup with an additional display or projector. Alternatively, you can combine two Neat Board 50s to power an extra screen or have your own device run the show through a single USB‑C and touchback."
     },
     {
       "id": "nt-boardpro",
       "sku": "Neat-Board-Pro",
-      "name": "Neat Board Pro",
+      "name": "Neat 65" Board Pro (Stand Not Included)",
       "brand": "Neat",
       "category": "bundles",
       "platform": "Android",
@@ -1362,7 +1362,7 @@
       "sample": false,
       "active": true,
       "imageUrl": "https://www.smartboards.com/cdn/shop/files/neat-studio-boardpro-adaptivestand-1-microsoft.png?v=1739904101&width=1214",
-      "description": "65\" multi-touch all-in-one board for larger meeting spaces."
+      "description": "Neat Board Pro delivers a vivid display of power through a 65‑inch multi‑touch screen and naturally adaptive, far‑reaching audio and video for immersive meeting experiences in one elegant device. It offers a range of extendable capabilities, collaboration applications, and uniquely flexible mounting options and is perfect for medium to large meeting spaces."
     },
     {
       "id": "nt-frame",
