@@ -738,7 +738,7 @@
       "labourHours": 0,
       "warranty": true,
       "sample": false,
-      "active": true,
+      "active": false,
       "imageUrl": "https://www.yealink.com/website-service/attachment/product/image/20250520/202505200937123170e33.png",
       "description": "All-in-one video conferencing board with interactive whiteboard."
     },
